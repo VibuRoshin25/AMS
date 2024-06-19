@@ -1,11 +1,16 @@
-import React from "react";
 import Button from "./Button";
 import logo from "../assets/flipopay_logo.png";
+import { signOut, getAuth } from "firebase/auth";
 
 const Header = () => {
-  const handleLogout = () => {
-    // Implement your logout logic here
-    console.log("Logout clicked");
+  const auth = getAuth();
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      console.log("Logout clicked");
+    } catch (error) {
+      console.log();
+    }
   };
 
   return (
