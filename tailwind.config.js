@@ -11,6 +11,7 @@ export default {
         "custom-gradient":
           "linear-gradient(90deg, rgba(2,0,36) 0%, rgba(125,211,252,1) 0%, rgba(2,132,199,1)  72%)",
         "login-bg": "URL('./src/assets/login-bg.jpg')",
+        imgbg: "url('./src/assets/Frame 1.png')",
       },
     },
   },

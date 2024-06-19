@@ -179,7 +179,7 @@ export default function Recordstable() {
     <div className="container mx-auto p-4">
       <div className="overflow-x-auto rounded-lg">
         <table className="min-w-full bg-white shadow-lg rounded-lg">
-          <thead className="bg-sky-500 rounded-t-lg">
+          <thead className="bg-sky-300 rounded-t-lg">
             <tr>
               <th className="py-3 px-4 text-white text-center rounded-tl-lg">ID</th>
               <th className="py-3 px-6 text-white text-center">Employee</th>
