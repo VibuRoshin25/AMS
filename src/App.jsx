@@ -1,4 +1,5 @@
 import EditModal from "./components/EditModal";
+import AdminPage from "./pages/AdminPage";
 
 function App() {
   return (
