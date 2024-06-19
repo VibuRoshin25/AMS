@@ -6,7 +6,7 @@ import Recordstable from "../components/Recordstable";
 export default function AdminPage() {
   return (
     <>
-      <div className="bg-imgbg backdrop-blur-xl">
+      <div className="backdrop-blur-xl">
         <Header />
         <div className="flex w-screen justify-center gap-20">
           <StyledDatePicker />
