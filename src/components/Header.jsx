@@ -1,15 +1,20 @@
-import React from "react";
 import Button from "./Button";
 import logo from "../assets/flipopay_logo.png";
+import { signOut, getAuth } from "firebase/auth";
 
 const Header = () => {
-  const handleLogout = () => {
-    // Implement your logout logic here
-    console.log("Logout clicked");
+  const auth = getAuth();
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      console.log("Logout clicked");
+    } catch (error) {
+      console.log();
+    }
   };
 
   return (
-    <header className="relative bg-sky-100 m-4 flex justify-between items-center h-16 shadow-md rounded-2xl">
+    <header className="relative bg-sky-200 flex mb-4 justify-between items-center h-16 shadow-md">
       <div className="flex items-center">
         <img
           src={logo} // Replace with your logo URL

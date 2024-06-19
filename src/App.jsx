@@ -1,10 +1,39 @@
+import LoginPage from "./pages/LoginPage";
+import AdminPage from "./pages/AdminPage";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import AuthContext from "./context/AuthContext";
+import Protected from "./pages/Protected";
+
 function App() {
+  const router = createBrowserRouter([
+    {
+      path: "/login",
+      element: <LoginPage />,
+    },
+    {
+      path: "/",
+      element: (
+        <Protected>
+          <AdminPage />
+        </Protected>
+      ),
+    },
+    // {
+    //   path: "User",
+    //   element: <Protected>
+    //     <UserPage />
+    //   </Protected>
+    // }
+    // {
+    //   path: "*",
+    //   element: <NotFoundPage />,
+    // },
+  ]);
+
   return (
-    <>
-      <h1 className="underline m-10 text-cyan-600 border ">
-        Flipopay AMS Application
-      </h1>
-    </>
+    <AuthContext>
+      <RouterProvider router={router}></RouterProvider>
+    </AuthContext>
   );
 }
 
