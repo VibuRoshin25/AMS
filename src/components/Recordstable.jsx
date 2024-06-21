@@ -1,146 +1,34 @@
 import React, { useState, useEffect } from "react";
 import { FcNext, FcPrevious } from "react-icons/fc";
+import { db } from "./firebase/firebaseConfig";
+import { collection, getDocs, doc, updateDoc } from "firebase/firestore";
+import EditModal from "./EditModal";
 
 export default function Recordstable() {
-  const roles = ["All Roles", "Junior software developer", "Senior software developer", "Manager", "MIS", "Intern", "Trainee"];
-  const departments = ["All Departments", "IT", "HR", "Accounts", "MIS"];
+  const roles = ["All Roles", "Junior Software Developer", "Senior Software Developer", "Manager", "MIS", "Intern", "Trainee", "HR", "System Admin", "Accountant", "IT Analyst"];
+  const departments = ["All Departments", "IT", "HR", "Accounts", "MIS", "Engineering"];
   const statuses = ["All Statuses", "Work from home", "Work from office", "Absent", "Late arrival"];
 
-  const initialRecords = [
-    {
-      id: 1,
-      Employee: "Suhail",
-      role: "Junior software developer",
-      Department: "IT",
-      Date: "29/03/1996",
-      Status: "Work from home",
-      Checkin: "09:00 AM",
-      CheckOut: "06:30 PM",
-    },
-   {
-      id: 2,
-      Employee: "Sabari",
-      role: "Senior software developer",
-      Department: "IT",
-      Date: "29/03/1996",
-      Status: "Work from home",
-      Checkin: "09:00 AM",
-      CheckOut: "05:48 PM",
-    },
-    {
-      id: 3,
-      Employee: "Vino",
-      role: "Manager",
-      Department: "IT",
-      Date: "29/03/1996",
-      Status: "Work from home",
-      Checkin: "09:00 AM",
-      CheckOut: "09:48 PM",
-    },
-    {
-      id: 4,
-      Employee: "prakash",
-      role: "MIS",
-      Department: "IT",
-      Date: "29/03/1996",
-      Status: "Work from home",
-      Checkin: "09:00 AM",
-      CheckOut: "06:48 PM",
-    },
-    {
-      id: 5,
-      Employee: "singing jose",
-      role: "MIS",
-      Department: "IT",
-      Date: "29/03/1996",
-      Status: "Late arrival",
-      Checkin: "11:00 AM",
-      CheckOut: "04:48 PM",
-    },
-    {
-      id: 6,
-      Employee: "Aishwarya",
-      role: "Intern",
-      Department: "HR",
-      Date: "29/03/1996",
-      Status: "Absent",
-      Checkin: "09:00 AM",
-      CheckOut: "07:48 PM",
-    },
-    {
-      id: 7,
-      Employee: "Kavery",
-      role: "Intern",
-      Department: "HR",
-      Date: "29/03/1996",
-      Status: "Absent",
-      Checkin: "09:00 AM",
-      CheckOut: "07:48 PM",
-    },
-    {
-      id: 8,
-      Employee: "Ganga",
-      role: "Intern",
-      Department: "HR",
-      Date: "29/03/1996",
-      Status: "Absent",
-      Checkin: "09:00 AM",
-      CheckOut: "07:48 PM",
-    },
-    {
-      id: 9,
-      Employee: "Yamuna",
-      role: "Intern",
-      Department: "HR",
-      Date: "29/03/1996",
-      Status: "Absent",
-      Checkin: "09:00 AM",
-      CheckOut: "07:48 PM",
-    },
-    {
-      id: 10,
-      Employee: "Kavitha",
-      role: "Intern",
-      Department: "HR",
-      Date: "29/03/1996",
-      Status: "Absent",
-      Checkin: "09:00 AM",
-      CheckOut: "07:48 PM",
-    },
-    {
-      id: 11,
-      Employee: "MAlinini",
-      role: "Intern",
-      Department: "HR",
-      Date: "29/03/1996",
-      Status: "Absent",
-      Checkin: "09:00 AM",
-      CheckOut: "07:48 PM",
-    },
-    {
-      id: 12,
-      Employee: "Priya",
-      role: "Intern",
-      Department: "HR",
-      Date: "29/03/1996",
-      Status: "Absent",
-      Checkin: "09:00 AM",
-      CheckOut: "07:48 PM",
-    },
-  ];
-
-  const [records, setRecords] = useState(initialRecords);
+  const [records, setRecords] = useState([]);
   const [selectedRole, setSelectedRole] = useState("All");
   const [selectedDepartment, setSelectedDepartment] = useState("All");
   const [selectedStatus, setSelectedStatus] = useState("All");
   const [currentPage, setCurrentPage] = useState(1);
+  const [editRecord, setEditRecord] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   const recordsPerPage = 10;
 
   useEffect(() => {
-    setSelectedRole("All");
-    setSelectedDepartment("All");
-    setSelectedStatus("All");
-  }, [records]);
+    const fetchRecords = async () => {
+      const recordsCollection = collection(db, "employees");
+      const recordsSnapshot = await getDocs(recordsCollection);
+      const recordsList = recordsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      setRecords(recordsList);
+    };
+
+    fetchRecords();
+  }, []);
 
   const calculateTotalHours = (checkin, checkout) => {
     const checkinTime = new Date(`01/01/2000 ${checkin}`);
@@ -157,7 +45,7 @@ export default function Recordstable() {
   const filteredRecords = records.filter((record) => {
     return (
       (selectedRole === "All" || record.role === selectedRole) &&
-      (selectedDepartment === "All" || record.Department === selectedDepartment) &&
+      (selectedDepartment === "All" || record.department === selectedDepartment) &&
       (selectedStatus === "All" || record.Status === selectedStatus)
     );
   });
@@ -174,6 +62,30 @@ export default function Recordstable() {
 
   const startIndex = (currentPage - 1) * recordsPerPage;
   const currentRecords = filteredRecords.slice(startIndex, startIndex + recordsPerPage);
+
+  const openEditModal = (record) => {
+    setEditRecord(record);
+    setIsModalOpen(true);
+  };
+
+  const closeEditModal = () => {
+    setEditRecord(null);
+    setIsModalOpen(false);
+  };
+
+  const handleSaveEdit = async (updatedData) => {
+    // Update the record in Firebase
+    const recordRef = doc(db, "employees", updatedData.id);
+    await updateDoc(recordRef, {
+      Checkin: updatedData.Checkin,
+      Checkout: updatedData.Checkout,
+      // Add other fields as needed
+    });
+    // Refresh records after update
+    const updatedRecords = await getDocs(collection(db, "employees"));
+    setRecords(updatedRecords.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+    closeEditModal();
+  };
 
   return (
     <div className="container mx-auto p-4">
@@ -214,6 +126,7 @@ export default function Recordstable() {
               <th className="py-3 px-6 text-white text-center">Check In</th>
               <th className="py-3 px-6 text-white text-center">Check Out</th>
               <th className="py-3 px-6 text-white text-center rounded-tr-lg">Work Hours</th>
+              <th className="py-3 px-6 text-white text-center">Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -229,9 +142,9 @@ export default function Recordstable() {
               return (
                 <tr key={record.id}>
                   <td className="py-2 px-4 border-b border-gray-300 text-center">{record.id}</td>
-                  <td className="py-2 px-6 border-b border-gray-300 text-center">{record.Employee}</td>
+                  <td className="py-2 px-6 border-b border-gray-300 text-center">{record.name}</td>
                   <td className="py-2 px-4 border-b border-gray-300 text-center">{record.role}</td>
-                  <td className="py-2 px-6 border-b border-gray-300 text-center">{record.Department}</td>
+                  <td className="py-2 px-6 border-b border-gray-300 text-center">{record.department}</td>
                   <td className="py-2 px-6 border-b border-gray-300 text-center">{record.Date}</td>
                   <td className={`py-2 px-6 border-b border-gray-300 text-center`}>
                     <button className={statusClasses}>
@@ -241,6 +154,11 @@ export default function Recordstable() {
                   <td className="py-2 px-6 border-b border-gray-300 text-center">{status === "Absent" ? "--" : record.Checkin}</td>
                   <td className="py-2 px-6 border-b border-gray-300 text-center">{status === "Absent" ? "--" : record.CheckOut}</td>
                   <td className="py-2 px-6 border-b border-gray-300 text-center">{status === "Absent" ? "--" : calculateTotalHours(record.Checkin, record.CheckOut)}</td>
+                  <td className="py-2 px-6 border-b border-gray-300 text-center">
+                    <button onClick={() => openEditModal(record)} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-4 rounded">
+                      Edit
+                    </button>
+                  </td>
                 </tr>
               );
             })}
@@ -252,6 +170,14 @@ export default function Recordstable() {
         <span className="text-gray-700">Page {currentPage} of {totalPages}</span>
         <button onClick={handleNextPage}><FcNext /></button>
       </div>
+
+      {isModalOpen && (
+        <EditModal
+          item={editRecord}
+          onSave={handleSaveEdit}
+          onClose={closeEditModal}
+        />
+      )}
     </div>
   );
 }
