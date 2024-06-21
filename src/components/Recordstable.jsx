@@ -125,7 +125,7 @@ export default function Recordstable() {
               <th className="py-3 px-6 text-white text-center">Status</th>
               <th className="py-3 px-6 text-white text-center">Check In</th>
               <th className="py-3 px-6 text-white text-center">Check Out</th>
-              <th className="py-3 px-6 text-white text-center rounded-tr-lg">Work Hours</th>
+              <th className="py-3 px-6 text-white text-center">Work Hours</th>
               <th className="py-3 px-6 text-white text-center">Actions</th>
             </tr>
           </thead>
