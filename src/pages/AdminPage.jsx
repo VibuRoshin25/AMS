@@ -2,6 +2,7 @@ import Header from "../components/Header";
 import StyledDatePicker from "../components/StyledDatePicker";
 import SearchBar from "../components/SearchBar";
 import Recordstable from "../components/Recordstable";
+import CreateUser from "../components/admin/CreateUser";
 
 export default function AdminPage() {
   return (
@@ -13,6 +14,7 @@ export default function AdminPage() {
           <SearchBar />
         </div>
         <Recordstable />
+        <CreateUser />
       </div>
     </>
   );
