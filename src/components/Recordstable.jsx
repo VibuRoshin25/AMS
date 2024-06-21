@@ -1,10 +1,25 @@
 import React, { useState, useEffect } from "react";
 import { FcNext, FcPrevious } from "react-icons/fc";
+import { calculateDuration } from "../utils/dateMethods";
 
 export default function Recordstable() {
-  const roles = ["All Roles", "Junior software developer", "Senior software developer", "Manager", "MIS", "Intern", "Trainee"];
+  const roles = [
+    "All Roles",
+    "Junior software developer",
+    "Senior software developer",
+    "Manager",
+    "MIS",
+    "Intern",
+    "Trainee",
+  ];
   const departments = ["All Departments", "IT", "HR", "Accounts", "MIS"];
-  const statuses = ["All Statuses", "Work from home", "Work from office", "Absent", "Late arrival"];
+  const statuses = [
+    "All Statuses",
+    "Work from home",
+    "Work from office",
+    "Absent",
+    "Late arrival",
+  ];
 
   const initialRecords = [
     {
@@ -17,7 +32,7 @@ export default function Recordstable() {
       Checkin: "09:00 AM",
       CheckOut: "06:30 PM",
     },
-   {
+    {
       id: 2,
       Employee: "Sabari",
       role: "Senior software developer",
@@ -142,14 +157,6 @@ export default function Recordstable() {
     setSelectedStatus("All");
   }, [records]);
 
-  const calculateTotalHours = (checkin, checkout) => {
-    const checkinTime = new Date(`01/01/2000 ${checkin}`);
-    const checkoutTime = new Date(`01/01/2000 ${checkout}`);
-    const diffInMs = checkoutTime - checkinTime;
-    const diffInHours = diffInMs / (1000 * 60 * 60);
-    return diffInHours.toFixed(2);
-  };
-
   const updateStatusForLateArrival = (checkin, status) => {
     return checkin > "09:00 AM" ? "Late arrival" : status;
   };
@@ -157,7 +164,8 @@ export default function Recordstable() {
   const filteredRecords = records.filter((record) => {
     return (
       (selectedRole === "All" || record.role === selectedRole) &&
-      (selectedDepartment === "All" || record.Department === selectedDepartment) &&
+      (selectedDepartment === "All" ||
+        record.Department === selectedDepartment) &&
       (selectedStatus === "All" || record.Status === selectedStatus)
     );
   });
@@ -173,7 +181,10 @@ export default function Recordstable() {
   };
 
   const startIndex = (currentPage - 1) * recordsPerPage;
-  const currentRecords = filteredRecords.slice(startIndex, startIndex + recordsPerPage);
+  const currentRecords = filteredRecords.slice(
+    startIndex,
+    startIndex + recordsPerPage
+  );
 
   return (
     <div className="container mx-auto p-4">
@@ -181,12 +192,18 @@ export default function Recordstable() {
         <table className="min-w-full bg-white shadow-lg rounded-lg">
           <thead className="bg-sky-300 rounded-t-lg">
             <tr>
-              <th className="py-3 px-4 text-white text-center rounded-tl-lg">ID</th>
+              <th className="py-3 px-4 text-white text-center rounded-tl-lg">
+                ID
+              </th>
               <th className="py-3 px-6 text-white text-center">Employee</th>
               <th className="py-3 px-4 text-white text-center">
                 <select
                   value={selectedRole}
-                  onChange={(e) => setSelectedRole(e.target.value === "All Roles" ? "All" : e.target.value)}
+                  onChange={(e) =>
+                    setSelectedRole(
+                      e.target.value === "All Roles" ? "All" : e.target.value
+                    )
+                  }
                   className="p-2 pr-0 border-none rounded bg-sky-500 text-white text-center"
                 >
                   {roles.map((role) => (
@@ -199,7 +216,13 @@ export default function Recordstable() {
               <th className="py-3 px-6 text-white text-center">
                 <select
                   value={selectedDepartment}
-                  onChange={(e) => setSelectedDepartment(e.target.value === "All Departments" ? "All" : e.target.value)}
+                  onChange={(e) =>
+                    setSelectedDepartment(
+                      e.target.value === "All Departments"
+                        ? "All"
+                        : e.target.value
+                    )
+                  }
                   className="p-2 pr-0 border-none rounded bg-sky-500 text-white text-center"
                 >
                   {departments.map((department) => (
@@ -213,34 +236,59 @@ export default function Recordstable() {
               <th className="py-3 px-6 text-white text-center">Status</th>
               <th className="py-3 px-6 text-white text-center">Check In</th>
               <th className="py-3 px-6 text-white text-center">Check Out</th>
-              <th className="py-3 px-6 text-white text-center rounded-tr-lg">Work Hours</th>
+              <th className="py-3 px-6 text-white text-center rounded-tr-lg">
+                Work Hours
+              </th>
             </tr>
           </thead>
           <tbody>
             {currentRecords.map((record) => {
-              const status = updateStatusForLateArrival(record.Checkin, record.Status);
-              let statusClasses = "bg-green-200 text-green-500 py-1 px-3 rounded";
+              const status = updateStatusForLateArrival(
+                record.Checkin,
+                record.Status
+              );
+              let statusClasses =
+                "bg-green-200 text-green-500 py-1 px-3 rounded";
               if (status === "Absent") {
                 statusClasses = "bg-red-200 text-red-500 py-1 px-3 rounded";
               } else if (status === "Late arrival") {
-                statusClasses = "bg-yellow-200 text-yellow-500 py-1 px-3 rounded";
+                statusClasses =
+                  "bg-yellow-200 text-yellow-500 py-1 px-3 rounded";
               }
 
               return (
                 <tr key={record.id}>
-                  <td className="py-2 px-4 border-b border-gray-300 text-center">{record.id}</td>
-                  <td className="py-2 px-6 border-b border-gray-300 text-center">{record.Employee}</td>
-                  <td className="py-2 px-4 border-b border-gray-300 text-center">{record.role}</td>
-                  <td className="py-2 px-6 border-b border-gray-300 text-center">{record.Department}</td>
-                  <td className="py-2 px-6 border-b border-gray-300 text-center">{record.Date}</td>
-                  <td className={`py-2 px-6 border-b border-gray-300 text-center`}>
-                    <button className={statusClasses}>
-                      {status}
-                    </button>
+                  <td className="py-2 px-4 border-b border-gray-300 text-center">
+                    {record.id}
                   </td>
-                  <td className="py-2 px-6 border-b border-gray-300 text-center">{status === "Absent" ? "--" : record.Checkin}</td>
-                  <td className="py-2 px-6 border-b border-gray-300 text-center">{status === "Absent" ? "--" : record.CheckOut}</td>
-                  <td className="py-2 px-6 border-b border-gray-300 text-center">{status === "Absent" ? "--" : calculateTotalHours(record.Checkin, record.CheckOut)}</td>
+                  <td className="py-2 px-6 border-b border-gray-300 text-center">
+                    {record.Employee}
+                  </td>
+                  <td className="py-2 px-4 border-b border-gray-300 text-center">
+                    {record.role}
+                  </td>
+                  <td className="py-2 px-6 border-b border-gray-300 text-center">
+                    {record.Department}
+                  </td>
+                  <td className="py-2 px-6 border-b border-gray-300 text-center">
+                    {record.Date}
+                  </td>
+                  <td
+                    className={`py-2 px-6 border-b border-gray-300 text-center`}
+                  >
+                    <button className={statusClasses}>{status}</button>
+                  </td>
+                  <td className="py-2 px-6 border-b border-gray-300 text-center">
+                    {status === "Absent" ? "--" : record.Checkin}
+                  </td>
+                  <td className="py-2 px-6 border-b border-gray-300 text-center">
+                    {status === "Absent" ? "--" : record.CheckOut}
+                  </td>
+                  <td className="py-2 px-6 border-b border-gray-300 text-center">
+                    {status === "Absent"
+                      ? "--"
+                      : calculateDuration(record.Checkin, record.CheckOut)}
+                  </td>
                 </tr>
               );
             })}
@@ -248,9 +296,15 @@ export default function Recordstable() {
         </table>
       </div>
       <div className="flex justify-between items-center mt-4">
-        <button onClick={handlePreviousPage}><FcPrevious /></button>
-        <span className="text-gray-700">Page {currentPage} of {totalPages}</span>
-        <button onClick={handleNextPage}><FcNext /></button>
+        <button onClick={handlePreviousPage}>
+          <FcPrevious />
+        </button>
+        <span className="text-gray-700">
+          Page {currentPage} of {totalPages}
+        </span>
+        <button onClick={handleNextPage}>
+          <FcNext />
+        </button>
       </div>
     </div>
   );
