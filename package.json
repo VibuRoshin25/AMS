@@ -25,6 +25,7 @@
     "react-datepicker": "^7.0.0",
     "react-dom": "^18.2.0",
     "react-icons": "^5.2.1",
+    "react-modal": "^3.16.1",
     "react-tailwindcss-datepicker": "^1.6.6",
     "react-time-picker": "^7.0.0",
     "react-toastify": "^10.0.5"
