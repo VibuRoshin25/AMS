@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { getDate, getTime, calculateDuration } from "../utils/dateMethods";
 import { db } from "./firebase/firebase";
-import { setDoc, collection, doc } from "firebase/firestore";
+import { getDoc, setDoc, collection, doc } from "firebase/firestore";
+import dayjs from "dayjs";
 
 const UserPunchin = ({ sid }) => {
   const [isPunchedIn, setIsPunchedIn] = useState(false);
@@ -9,6 +10,37 @@ const UserPunchin = ({ sid }) => {
   const [punchOutTime, setPunchOutTime] = useState(null);
   const [totalDuration, setTotalDuration] = useState(null);
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
+
+  useEffect(() => {
+    const fetchAttendanceRecord = async () => {
+      try {
+        const currentTime = new Date();
+        const formattedDate = getDate(currentTime);
+        const docRef = doc(db, "attendance", sid);
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          if (data[formattedDate]) {
+            const record = data[formattedDate];
+            if (record.punchin && !record.punchout) {
+              setPunchInTime(dayjs(record.punchin, "hh:mm A").toDate());
+              setIsPunchedIn(true);
+            } else if (record.punchin && record.punchout) {
+              setPunchInTime(dayjs(record.punchin, "hh:mm A").toDate());
+              setPunchOutTime(dayjs(record.punchout, "hh:mm A").toDate());
+              setTotalDuration(record.duration);
+              setIsButtonDisabled(true);
+            }
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching attendance record: ", error);
+      }
+    };
+
+    fetchAttendanceRecord();
+  }, [sid]);
 
   const handlePunch = async () => {
     try {
@@ -24,7 +56,7 @@ const UserPunchin = ({ sid }) => {
         setIsPunchedIn(true);
 
         const data = {
-          [getDate(currentTime)]: {
+          [formattedDate]: {
             punchin: formattedTime,
           },
         };
