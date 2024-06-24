@@ -10,6 +10,11 @@ const EditModal = ({ item, onSave, onClose }) => {
     name: item.name || "",
     inDateTime: item.inDateTime ? dayjs(item.inDateTime) : dayjs(),
     outDateTime: item.outDateTime ? dayjs(item.outDateTime) : dayjs(),
+    id: item.id,
+    name: item.name || "",
+    role: item.role || "",
+    Checkin: item.Checkin || "",
+    Checkout: item.Checkout || "",
   });
 
   // const handleChange = (e) => {
@@ -23,7 +28,7 @@ const EditModal = ({ item, onSave, onClose }) => {
   const handleTimeChange = (name, newValue) => {
     setFormData({
       ...formData,
-      [name]: newValue,
+      [name]: newValue.format("HH:mm"),
     });
   };
 
@@ -107,9 +112,10 @@ const EditModal = ({ item, onSave, onClose }) => {
 
 EditModal.propTypes = {
   item: PropTypes.shape({
+    id: PropTypes.string,
     name: PropTypes.string,
-    inDateTime: PropTypes.string,
-    outDateTime: PropTypes.string,
+    Checkin: PropTypes.string,
+    Checkout: PropTypes.string,
   }),
   onSave: PropTypes.func.isRequired,
   onClose: PropTypes.func.isRequired,

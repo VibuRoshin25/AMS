@@ -141,20 +141,63 @@ const initialRecords = [
     CheckOut: "07:48 PM",
   },
 ];
+import { db } from "./firebase/firebase";
+import { collection, getDocs, doc, updateDoc } from "firebase/firestore";
+import EditModal from "./EditModal";
 
 export default function Recordstable() {
-  const [records, setRecords] = useState(initialRecords);
+  const roles = [
+    "All Roles",
+    "Junior Software Developer",
+    "Senior Software Developer",
+    "Manager",
+    "MIS",
+    "Intern",
+    "Trainee",
+    "HR",
+    "System Admin",
+    "Accountant",
+    "IT Analyst",
+  ];
+  const departments = [
+    "All Departments",
+    "IT",
+    "HR",
+    "Accounts",
+    "MIS",
+    "Engineering",
+  ];
+  const statuses = [
+    "All Statuses",
+    "Work from home",
+    "Work from office",
+    "Absent",
+    "Late arrival",
+  ];
+
+  const [records, setRecords] = useState([]);
   const [selectedRole, setSelectedRole] = useState("All");
   const [selectedDepartment, setSelectedDepartment] = useState("All");
   const [selectedStatus, setSelectedStatus] = useState("All");
   const [currentPage, setCurrentPage] = useState(1);
+  const [editRecord, setEditRecord] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   const recordsPerPage = 10;
 
   useEffect(() => {
-    setSelectedRole("All");
-    setSelectedDepartment("All");
-    setSelectedStatus("All");
-  }, [records]);
+    const fetchRecords = async () => {
+      const recordsCollection = collection(db, "employees");
+      const recordsSnapshot = await getDocs(recordsCollection);
+      const recordsList = recordsSnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setRecords(recordsList);
+    };
+
+    fetchRecords();
+  }, []);
 
   const calculateTotalHours = (checkin, checkout) => {
     const checkinTime = new Date(`01/01/2000 ${checkin}`);
@@ -343,6 +386,14 @@ export default function Recordstable() {
           <FcNext size={24} />
         </button>
       </div>
+
+      {isModalOpen && (
+        <EditModal
+          item={editRecord}
+          onSave={handleSaveEdit}
+          onClose={closeEditModal}
+        />
+      )}
     </div>
   );
 }
