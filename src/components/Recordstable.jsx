@@ -34,8 +34,10 @@ export default function Recordstable() {
     const checkinTime = new Date(`01/01/2000 ${checkin}`);
     const checkoutTime = new Date(`01/01/2000 ${checkout}`);
     const diffInMs = checkoutTime - checkinTime;
-    const diffInHours = diffInMs / (1000 * 60 * 60);
-    return diffInHours.toFixed(2);
+    const diffInMinutes = diffInMs / (1000 * 60);
+    const hours = Math.floor(diffInMinutes / 60);
+    const minutes = Math.floor(diffInMinutes % 60);
+    return `${hours} hrs ${minutes} mins`;
   };
 
   const updateStatusForLateArrival = (checkin, status) => {
@@ -166,9 +168,13 @@ export default function Recordstable() {
         </table>
       </div>
       <div className="flex justify-between items-center mt-4">
-        <button onClick={handlePreviousPage}><FcPrevious /></button>
+        <button onClick={handlePreviousPage} className="p-2">
+          <FcPrevious size={24} />
+        </button>
         <span className="text-gray-700">Page {currentPage} of {totalPages}</span>
-        <button onClick={handleNextPage}><FcNext /></button>
+        <button onClick={handleNextPage} className="p-2">
+          <FcNext size={24} />
+        </button>
       </div>
 
       {isModalOpen && (

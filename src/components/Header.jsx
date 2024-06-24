@@ -14,7 +14,7 @@ const Header = () => {
   };
 
   return (
-    <header className="relative bg-sky-200 flex mb-4 justify-between items-center h-16 shadow-md">
+    <header className="w-[98%] relative rounded-full drop-shadow-xl bg-sky-200 flex mt-3 mb-4 justify-between items-center h-16 shadow-md">
       <div className="flex items-center">
         <img
           src={logo} // Replace with your logo URL
