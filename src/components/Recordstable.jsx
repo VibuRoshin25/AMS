@@ -1,149 +1,7 @@
 import { useState, useEffect } from "react";
 import { FcNext, FcPrevious } from "react-icons/fc";
-import { calculateDuration } from "../utils/dateMethods";
-
-const roles = [
-  "All Roles",
-  "Junior software developer",
-  "Senior software developer",
-  "Manager",
-  "MIS",
-  "Intern",
-  "Trainee",
-];
-const departments = ["All Departments", "IT", "HR", "Accounts", "MIS"];
-const statuses = [
-  "All Statuses",
-  "Work from home",
-  "Work from office",
-  "Absent",
-  "Present",
-];
-
-const initialRecords = [
-  {
-    id: 1,
-    Employee: "Suhail",
-    role: "Junior software developer",
-    Department: "IT",
-    Date: "29/03/1996",
-    Status: "Work from home",
-    Checkin: "09:00 AM",
-    CheckOut: "06:30 PM",
-  },
-  {
-    id: 2,
-    Employee: "Sabari",
-    role: "Senior software developer",
-    Department: "IT",
-    Date: "29/03/1996",
-    Status: "Work from home",
-    Checkin: "09:00 AM",
-    CheckOut: "05:48 PM",
-  },
-  {
-    id: 3,
-    Employee: "Vino",
-    role: "Manager",
-    Department: "IT",
-    Date: "29/03/1996",
-    Status: "Work from home",
-    Checkin: "09:00 AM",
-    CheckOut: "09:48 PM",
-  },
-  {
-    id: 4,
-    Employee: "prakash",
-    role: "MIS",
-    Department: "IT",
-    Date: "29/03/1996",
-    Status: "Work from home",
-    Checkin: "09:00 AM",
-    CheckOut: "06:48 PM",
-  },
-  {
-    id: 5,
-    Employee: "singing jose",
-    role: "MIS",
-    Department: "IT",
-    Date: "29/03/1996",
-    Status: "Late arrival",
-    Checkin: "11:00 AM",
-    CheckOut: "04:48 PM",
-  },
-  {
-    id: 6,
-    Employee: "Aishwarya",
-    role: "Intern",
-    Department: "HR",
-    Date: "29/03/1996",
-    Status: "Absent",
-    Checkin: "09:00 AM",
-    CheckOut: "07:48 PM",
-  },
-  {
-    id: 7,
-    Employee: "Kavery",
-    role: "Intern",
-    Department: "HR",
-    Date: "29/03/1996",
-    Status: "Absent",
-    Checkin: "09:00 AM",
-    CheckOut: "07:48 PM",
-  },
-  {
-    id: 8,
-    Employee: "Ganga",
-    role: "Intern",
-    Department: "HR",
-    Date: "29/03/1996",
-    Status: "Absent",
-    Checkin: "09:00 AM",
-    CheckOut: "07:48 PM",
-  },
-  {
-    id: 9,
-    Employee: "Yamuna",
-    role: "Intern",
-    Department: "HR",
-    Date: "29/03/1996",
-    Status: "Absent",
-    Checkin: "09:00 AM",
-    CheckOut: "07:48 PM",
-  },
-  {
-    id: 10,
-    Employee: "Kavitha",
-    role: "Intern",
-    Department: "HR",
-    Date: "29/03/1996",
-    Status: "Absent",
-    Checkin: "09:00 AM",
-    CheckOut: "07:48 PM",
-  },
-  {
-    id: 11,
-    Employee: "MAlinini",
-    role: "Intern",
-    Department: "HR",
-    Date: "29/03/1996",
-    Status: "Absent",
-    Checkin: "09:00 AM",
-    CheckOut: "07:48 PM",
-  },
-  {
-    id: 12,
-    Employee: "Priya",
-    role: "Intern",
-    Department: "HR",
-    Date: "29/03/1996",
-    Status: "Absent",
-    Checkin: "09:00 AM",
-    CheckOut: "07:48 PM",
-  },
-];
 import { db } from "./firebase/firebase";
-import { collection, getDocs, doc, updateDoc } from "firebase/firestore";
+import { collection, getDocs } from "firebase/firestore";
 import EditModal from "./EditModal";
 
 export default function Recordstable() {
@@ -199,16 +57,6 @@ export default function Recordstable() {
 
     fetchRecords();
   }, []);
-
-  const calculateTotalHours = (checkin, checkout) => {
-    const checkinTime = new Date(`01/01/2000 ${checkin}`);
-    const checkoutTime = new Date(`01/01/2000 ${checkout}`);
-    const diffInMs = checkoutTime - checkinTime;
-    const diffInMinutes = diffInMs / (1000 * 60);
-    const hours = Math.floor(diffInMinutes / 60);
-    const minutes = Math.floor(diffInMinutes % 60);
-    return `${hours} hrs ${minutes} mins`;
-  };
 
   const updateStatusForLateArrival = (checkin, status) => {
     return checkin > "09:00 AM" ? "Late arrival" : status;
@@ -342,16 +190,16 @@ export default function Recordstable() {
                       {record.id}
                     </td>
                     <td className="py-2 px-2 sm:px-6 border-b border-gray-300 text-center">
-                      {record.Employee}
+                      {record.name}
                     </td>
                     <td className="py-2 px-2 sm:px-4 border-b border-gray-300 text-center">
                       {record.role}
                     </td>
                     <td className="py-2 px-2 sm:px-6 border-b border-gray-300 text-center">
-                      {record.Department}
+                      {record.department}
                     </td>
                     <td className="py-2 px-2 sm:px-6 border-b border-gray-300 text-center">
-                      {record.Date}
+                      {record.date}
                     </td>
                     <td
                       className={`py-2 px-2 sm:px-6 border-b border-gray-300 text-center`}
@@ -359,15 +207,13 @@ export default function Recordstable() {
                       <button className={statusClasses}>{status}</button>
                     </td>
                     <td className="py-2 px-2 sm:px-6 border-b border-gray-300 text-center">
-                      {status === "Absent" ? "--" : record.Checkin}
+                      {status === "Absent" ? "--" : record.checkin}
                     </td>
                     <td className="py-2 px-2 sm:px-6 border-b border-gray-300 text-center">
-                      {status === "Absent" ? "--" : record.CheckOut}
+                      {status === "Absent" ? "--" : record.checkOut}
                     </td>
                     <td className="py-2 px-2 sm:px-6 border-b border-gray-300 text-center">
-                      {status === "Absent"
-                        ? "--"
-                        : calculateTotalHours(record.Checkin, record.CheckOut)}
+                      {status === "Absent" ? "--" : record.duration}
                     </td>
                   </tr>
                 );
