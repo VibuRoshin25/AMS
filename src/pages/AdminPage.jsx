@@ -3,7 +3,6 @@ import StyledDatePicker from "../components/StyledDatePicker";
 import SearchBar from "../components/SearchBar";
 import Recordstable from "../components/Recordstable";
 import CreateEmployeeModal from "../components/admin/CreateEmployeeModal";
-import wallpaper from "../assets/HomePage.jpg";
 
 export default function AdminPage() {
   return (
