@@ -1,50 +1,69 @@
 import { useState } from "react";
+import { getDate, getTime, calculateDuration } from "../utils/dateMethods";
+import { db } from "./firebase/firebase";
+import { setDoc, collection, doc } from "firebase/firestore";
 
-const UserPunchin = () => {
+const UserPunchin = ({ sid }) => {
   const [isPunchedIn, setIsPunchedIn] = useState(false);
   const [punchInTime, setPunchInTime] = useState(null);
   const [punchOutTime, setPunchOutTime] = useState(null);
   const [totalDuration, setTotalDuration] = useState(null);
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
 
-  const handlePunch = () => {
-    const currentTime = new Date();
-    if (!isPunchedIn) {
-      setPunchInTime(currentTime);
-      setPunchOutTime(null);
-      setTotalDuration(null);
-      setIsPunchedIn(true);
-    } else {
-      setPunchOutTime(currentTime);
-      const duration = calculateTotalDuration(punchInTime, currentTime);
-      setTotalDuration(duration);
-      setIsPunchedIn(false);
-      setIsButtonDisabled(true);
+  const handlePunch = async () => {
+    try {
+      const currentTime = new Date();
+      const formattedDate = getDate(currentTime);
+      const formattedTime = getTime(currentTime);
+      const collectionRef = collection(db, "attendance");
+      const docRef = doc(collectionRef, sid);
+
+      if (!isPunchedIn) {
+        setPunchInTime(currentTime);
+        setTotalDuration(null);
+        setIsPunchedIn(true);
+
+        const data = {
+          [getDate(currentTime)]: {
+            punchin: formattedTime,
+          },
+        };
+
+        await setDoc(docRef, data, { merge: true });
+      } else {
+        setPunchOutTime(currentTime);
+        const duration = calculateDuration(punchInTime, currentTime);
+        setTotalDuration(duration);
+        setIsPunchedIn(false);
+        setIsButtonDisabled(true);
+
+        const updateData = {
+          [formattedDate]: {
+            punchout: formattedTime,
+            duration: duration,
+          },
+        };
+        await setDoc(docRef, updateData, { merge: true });
+      }
+    } catch (error) {
+      console.error(error);
     }
   };
 
-  const calculateTotalDuration = (start, end) => {
-    const difference = end - start;
-    const hours = Math.floor(difference / (1000 * 60 * 60));
-    const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
-    return `${hours} hours ${minutes} min`;
-  };
-
-  const formatTime = (date) => {
-    if (!date) return "--";
-    return date.toLocaleTimeString();
-  };
-
   return (
-    <div className="flex flex-col items-center justify-center w-1/3 h-auto bg-gradient-to-r  p-6 mt-4 rounded-lg shadow-lg">
+    <div className="flex flex-col items-center justify-center w-1/3 h-auto bg-gradient-to-r p-6 mt-4 rounded-lg shadow-lg">
       <div className="flex justify-between w-full mb-6">
         <div className="text-center">
-          <p className=" font-bold text-lg text-sky-500">Punch In</p>
-          <a className="block text-black text-sm">{formatTime(punchInTime)}</a>
+          <p className="font-bold text-lg text-sky-500">Punch In</p>
+          <a className="block text-black text-sm">
+            {punchInTime ? getTime(punchInTime) : "--:--"}
+          </a>
         </div>
         <div className="text-center">
-          <p className=" font-bold text-lg text-sky-500">Punch Out</p>
-          <a className="block text-black text-sm">{formatTime(punchOutTime)}</a>
+          <p className="font-bold text-lg text-sky-500">Punch Out</p>
+          <a className="block text-black text-sm">
+            {punchOutTime ? getTime(punchOutTime) : "--:--"}
+          </a>
         </div>
       </div>
       <button

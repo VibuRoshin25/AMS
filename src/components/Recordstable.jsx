@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { FcNext, FcPrevious } from "react-icons/fc";
+import { calculateDuration } from "../utils/dateMethods";
 
 const roles = [
   "All Roles",
