@@ -21,6 +21,16 @@ function App() {
         </Protected>
       ),
     },
+     // {
+    //   path: "User",
+    //   element: <Protected>
+    //     <UserPage />
+    //   </Protected>
+    // }
+    // {
+    //   path: "*",
+    //   element: <NotFoundPage />,
+    // },
   ]);
 
   return (
