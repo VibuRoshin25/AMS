@@ -5,6 +5,7 @@ import Recordstable from "../components/Recordstable";
 import CreateEmployeeModal from "../components/admin/CreateEmployeeModal";
 
 export default function AdminPage() {
+  
   return (
     
 
