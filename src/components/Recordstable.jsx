@@ -1,5 +1,8 @@
 import { useState, useEffect } from "react";
 import { FcNext, FcPrevious } from "react-icons/fc";
+import { db } from "./firebase/firebase";
+import { collection, getDocs } from "firebase/firestore";
+import EditModal from "./EditModal";
 
 const roles = [
   "All Roles",
@@ -19,162 +22,7 @@ const statuses = [
   "Present",
 ];
 
-const initialRecords = [
-  {
-    id: 1,
-    Employee: "Suhail",
-    role: "Junior software developer",
-    Department: "IT",
-    Date: "29/03/1996",
-    Status: "Work from home",
-    Checkin: "09:00 AM",
-    CheckOut: "06:30 PM",
-  },
-  {
-    id: 2,
-    Employee: "Sabari",
-    role: "Senior software developer",
-    Department: "IT",
-    Date: "29/03/1996",
-    Status: "Work from home",
-    Checkin: "09:00 AM",
-    CheckOut: "05:48 PM",
-  },
-  {
-    id: 3,
-    Employee: "Vino",
-    role: "Manager",
-    Department: "IT",
-    Date: "29/03/1996",
-    Status: "Work from home",
-    Checkin: "09:00 AM",
-    CheckOut: "09:48 PM",
-  },
-  {
-    id: 4,
-    Employee: "prakash",
-    role: "MIS",
-    Department: "IT",
-    Date: "29/03/1996",
-    Status: "Work from home",
-    Checkin: "09:00 AM",
-    CheckOut: "06:48 PM",
-  },
-  {
-    id: 5,
-    Employee: "singing jose",
-    role: "MIS",
-    Department: "IT",
-    Date: "29/03/1996",
-    Status: "Late arrival",
-    Checkin: "11:00 AM",
-    CheckOut: "04:48 PM",
-  },
-  {
-    id: 6,
-    Employee: "Aishwarya",
-    role: "Intern",
-    Department: "HR",
-    Date: "29/03/1996",
-    Status: "Absent",
-    Checkin: "09:00 AM",
-    CheckOut: "07:48 PM",
-  },
-  {
-    id: 7,
-    Employee: "Kavery",
-    role: "Intern",
-    Department: "HR",
-    Date: "29/03/1996",
-    Status: "Absent",
-    Checkin: "09:00 AM",
-    CheckOut: "07:48 PM",
-  },
-  {
-    id: 8,
-    Employee: "Ganga",
-    role: "Intern",
-    Department: "HR",
-    Date: "29/03/1996",
-    Status: "Absent",
-    Checkin: "09:00 AM",
-    CheckOut: "07:48 PM",
-  },
-  {
-    id: 9,
-    Employee: "Yamuna",
-    role: "Intern",
-    Department: "HR",
-    Date: "29/03/1996",
-    Status: "Absent",
-    Checkin: "09:00 AM",
-    CheckOut: "07:48 PM",
-  },
-  {
-    id: 10,
-    Employee: "Kavitha",
-    role: "Intern",
-    Department: "HR",
-    Date: "29/03/1996",
-    Status: "Absent",
-    Checkin: "09:00 AM",
-    CheckOut: "07:48 PM",
-  },
-  {
-    id: 11,
-    Employee: "MAlinini",
-    role: "Intern",
-    Department: "HR",
-    Date: "29/03/1996",
-    Status: "Absent",
-    Checkin: "09:00 AM",
-    CheckOut: "07:48 PM",
-  },
-  {
-    id: 12,
-    Employee: "Priya",
-    role: "Intern",
-    Department: "HR",
-    Date: "29/03/1996",
-    Status: "Absent",
-    Checkin: "09:00 AM",
-    CheckOut: "07:48 PM",
-  },
-];
-import { db } from "./firebase/firebase";
-import { collection, getDocs, doc, updateDoc } from "firebase/firestore";
-import EditModal from "./EditModal";
-
 export default function Recordstable() {
-  const roles = [
-    "All Roles",
-    "Junior Software Developer",
-    "Senior Software Developer",
-    "Manager",
-    "MIS",
-    "Intern",
-    "Trainee",
-    "HR",
-    "System Admin",
-    "Accountant",
-    "IT Analyst",
-  ];
-  const departments = [
-    "All Departments",
-    "IT",
-    "HR",
-    "Accounts",
-    "MIS",
-    "Engineering",
-  ];
-  const statuses = [
-    "All Statuses",
-    "Work from home",
-    "Work from office",
-    "Absent",
-    "Late arrival",
-  ];
-
   const [records, setRecords] = useState([]);
   const [selectedRole, setSelectedRole] = useState("All");
   const [selectedDepartment, setSelectedDepartment] = useState("All");
@@ -216,9 +64,8 @@ export default function Recordstable() {
   const filteredRecords = records.filter((record) => {
     return (
       (selectedRole === "All" || record.role === selectedRole) &&
-      (selectedDepartment === "All" ||
-        record.Department === selectedDepartment) &&
-      (selectedStatus === "All" || record.Status === selectedStatus)
+      (selectedDepartment === "All" || record.department === selectedDepartment) &&
+      (selectedStatus === "All" || record.status === selectedStatus)
     );
   });
 
@@ -323,8 +170,8 @@ export default function Recordstable() {
             <tbody>
               {currentRecords.map((record) => {
                 const status = updateStatusForLateArrival(
-                  record.Checkin,
-                  record.Status
+                  record.checkin,
+                  record.status
                 );
                 let statusClasses =
                   "bg-green-200 text-green-500 py-1 px-3 rounded";
@@ -341,16 +188,16 @@ export default function Recordstable() {
                       {record.id}
                     </td>
                     <td className="py-2 px-2 sm:px-6 border-b border-gray-300 text-center">
-                      {record.Employee}
+                      {record.name}
                     </td>
                     <td className="py-2 px-2 sm:px-4 border-b border-gray-300 text-center">
                       {record.role}
                     </td>
                     <td className="py-2 px-2 sm:px-6 border-b border-gray-300 text-center">
-                      {record.Department}
+                      {record.department}
                     </td>
                     <td className="py-2 px-2 sm:px-6 border-b border-gray-300 text-center">
-                      {record.Date}
+                      {record.date}
                     </td>
                     <td
                       className={`py-2 px-2 sm:px-6 border-b border-gray-300 text-center`}
@@ -358,15 +205,15 @@ export default function Recordstable() {
                       <button className={statusClasses}>{status}</button>
                     </td>
                     <td className="py-2 px-2 sm:px-6 border-b border-gray-300 text-center">
-                      {status === "Absent" ? "--" : record.Checkin}
+                      {status === "Absent" ? "--" : record.checkin}
                     </td>
                     <td className="py-2 px-2 sm:px-6 border-b border-gray-300 text-center">
-                      {status === "Absent" ? "--" : record.CheckOut}
+                      {status === "Absent" ? "--" : record.checkout}
                     </td>
                     <td className="py-2 px-2 sm:px-6 border-b border-gray-300 text-center">
                       {status === "Absent"
                         ? "--"
-                        : calculateTotalHours(record.Checkin, record.CheckOut)}
+                        : calculateTotalHours(record.checkin, record.checkout)}
                     </td>
                   </tr>
                 );
