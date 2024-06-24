@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { collection, doc, setDoc, getDocs } from "firebase/firestore";
 import { db } from "../firebase/firebase";
 import Button from "../Button";
@@ -11,7 +11,7 @@ const CreateEmployeeModal = () => {
   const [role, setRole] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const departments = ["IT", "HR", "Accounts", "MIS","Engineering"];
+  const departments = ["IT", "HR", "Accounts", "MIS", "Engineering"];
   const roles = [
     "Junior Software Developer",
     "Senior Software Developer",
@@ -49,7 +49,7 @@ const CreateEmployeeModal = () => {
       const docRef = doc(collectionRef, id);
       await setDoc(docRef, data);
 
-      toast.success(' Employee added successfully!', {
+      toast.success(" Employee added successfully!", {
         position: "top-center",
         autoClose: 5000,
         hideProgressBar: false,
@@ -59,7 +59,7 @@ const CreateEmployeeModal = () => {
         progress: undefined,
         theme: "colored",
       });
-      
+
       setIsModalOpen(false);
     } catch (error) {
       console.log(error);
@@ -90,15 +90,20 @@ const CreateEmployeeModal = () => {
       <CustomModal isOpen={isModalOpen} onClose={closeModal}>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700">Name</label>
+            <label className="block text-sm font-medium text-gray-700">
+              Name
+            </label>
             <input
               className="pl-3 mt-1 block w-full border border-sky-100 rounded-md shadow-sm focus:ring-sky-500 focus:border-sky-500 focus:outline-sky-500 sm:text-sm"
-              type="text" required
+              type="text"
+              required
               onChange={(e) => setName(e.target.value)}
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700">Department</label>
+            <label className="block text-sm font-medium text-gray-700">
+              Department
+            </label>
             <select
               className="mt-1 block w-full border border-sky-100 rounded-md shadow-sm focus:ring-sky-500 focus:border-sky-500 focus:outline-sky-500 sm:text-sm"
               required
@@ -113,7 +118,9 @@ const CreateEmployeeModal = () => {
             </select>
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700">Role</label>
+            <label className="block text-sm font-medium text-gray-700">
+              Role
+            </label>
             <select
               className="mt-1 block w-full border border-sky-100 rounded-md shadow-sm focus:ring-sky-500 focus:border-sky-500 focus:outline-sky-500 sm:text-sm"
               required

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from "react";
 
 const UserPunchin = () => {
   const [isPunchedIn, setIsPunchedIn] = useState(false);
@@ -19,7 +19,7 @@ const UserPunchin = () => {
       const duration = calculateTotalDuration(punchInTime, currentTime);
       setTotalDuration(duration);
       setIsPunchedIn(false);
-      setIsButtonDisabled(true); 
+      setIsButtonDisabled(true);
     }
   };
 
@@ -31,39 +31,37 @@ const UserPunchin = () => {
   };
 
   const formatTime = (date) => {
-    if (!date) return '--';
+    if (!date) return "--";
     return date.toLocaleTimeString();
   };
 
   return (
-    <div className='flex flex-col items-center justify-center w-1/3 h-auto bg-gradient-to-r  p-6 mt-4 rounded-lg shadow-lg'>
-      <div className='flex justify-between w-full mb-6'>
-        <div className='text-center'>
-          <p className=' font-bold text-lg text-sky-500'>Punch In</p>
-          <a className='block text-black text-sm'>{formatTime(punchInTime)}</a>
+    <div className="flex flex-col items-center justify-center w-1/3 h-auto bg-gradient-to-r  p-6 mt-4 rounded-lg shadow-lg">
+      <div className="flex justify-between w-full mb-6">
+        <div className="text-center">
+          <p className=" font-bold text-lg text-sky-500">Punch In</p>
+          <a className="block text-black text-sm">{formatTime(punchInTime)}</a>
         </div>
-        <div className='text-center'>
-          <p className=' font-bold text-lg text-sky-500'>Punch Out</p>    
-          <a className='block text-black text-sm'>{formatTime(punchOutTime)}</a>
-        </div>       
+        <div className="text-center">
+          <p className=" font-bold text-lg text-sky-500">Punch Out</p>
+          <a className="block text-black text-sm">{formatTime(punchOutTime)}</a>
+        </div>
       </div>
-      <button 
-        className='bg-gray-900 text-white w-28 h-10 rounded-full hover:bg-gray-700 transition duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:bg-gray-400'
+      <button
+        className="bg-gray-900 text-white w-28 h-10 rounded-full hover:bg-gray-700 transition duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:bg-gray-400"
         onClick={handlePunch}
-        disabled={isButtonDisabled} 
+        disabled={isButtonDisabled}
       >
-        {isPunchedIn ? 'Punch Out' : 'Punch In'}
+        {isPunchedIn ? "Punch Out" : "Punch In"}
       </button>
       {totalDuration && (
-        <div className='mt-6 text-center'>
-          <p className='text-sky-500 font-bold text-lg'>Total Duration</p>
-          <a className='block text-black text-sm'>{totalDuration}</a>
+        <div className="mt-6 text-center">
+          <p className="text-sky-500 font-bold text-lg">Total Duration</p>
+          <a className="block text-black text-sm">{totalDuration}</a>
         </div>
       )}
     </div>
   );
 };
 
-
 export default UserPunchin;
-

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Pie } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 
@@ -30,22 +30,26 @@ export default function UserProfile() {
     const totalDaysInMonth = calculateTotalDays(currentMonth, currentYear);
     setTotalDays(totalDaysInMonth);
 
-    const presentCount = records.filter(record => record.Status === "Present").length;
+    const presentCount = records.filter(
+      (record) => record.Status === "Present"
+    ).length;
     setPresentDays(presentCount);
 
-    const absentCount = records.filter(record => record.Status === "Absent").length;
+    const absentCount = records.filter(
+      (record) => record.Status === "Absent"
+    ).length;
     setAbsentDays(absentCount);
 
     setAvailableLeave(20);
   }, [records]);
 
   const pieData = {
-    labels: ['Present Days', 'Absent Days', 'Total Days'],
+    labels: ["Present Days", "Absent Days", "Total Days"],
     datasets: [
       {
-        label: 'Attendance',
+        label: "Attendance",
         data: [presentDays, absentDays, totalDays - presentDays - absentDays],
-        backgroundColor: ['#10B981', '#EF4444', '#0EA5E9'], 
+        backgroundColor: ["#10B981", "#EF4444", "#0EA5E9"],
         hoverOffset: 4,
       },
     ],
@@ -56,7 +60,7 @@ export default function UserProfile() {
     maintainAspectRatio: false,
     plugins: {
       legend: {
-        position: 'top',
+        position: "top",
       },
     },
     layout: {
@@ -72,52 +76,52 @@ export default function UserProfile() {
   return (
     <div className="container mx-auto p-4">
       <div className="bg-white p-6 rounded shadow-lg flex flex-col lg:flex-row">
-<div className="flex flex-col  lg:w-1/3">
-<div className="flex justify-between">
-  <div className="flex justify-between gap-12">
-          <img
-            src=""
-            alt="        Profile"
-            className="w-24 h-24 rounded-full border-4 border-sky-500"
-          />
-          <div className="text-center lg:text-top">
-            <h2 className="text-3xl font-bold text-sky-500">Vino Kishore</h2>
-            <p className="text-gray-600">Junior Developer, IT Department</p>
-            <p className="text-gray-600">Email: vinokishore@murder.com</p>
-            <p className="text-gray-600">Phone: +91 7339691376</p>
-          </div>
-          </div>
+        <div className="flex flex-col  lg:w-1/3">
+          <div className="flex justify-between">
+            <div className="flex justify-between gap-12">
+              <img
+                src=""
+                alt="        Profile"
+                className="w-24 h-24 rounded-full border-4 border-sky-500"
+              />
+              <div className="text-center lg:text-top">
+                <h2 className="text-3xl font-bold text-sky-500">
+                  Vino Kishore
+                </h2>
+                <p className="text-gray-600">Junior Developer, IT Department</p>
+                <p className="text-gray-600">Email: vinokishore@murder.com</p>
+                <p className="text-gray-600">Phone: +91 7339691376</p>
+              </div>
+            </div>
           </div>
           <div className="w-full mt-6">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="bg-sky-500 text-white p-4 rounded shadow">
-            <h3 className="text-xl font-semibold mb-2">Total Days</h3>
-            <p className="text-lg">{totalDays}</p>
-          </div>
-          <div className="bg-green-500 text-white p-4 rounded shadow">
-            <h3 className="text-xl font-semibold mb-2">Present Days</h3>
-            <p className="text-lg">{presentDays}</p>
-          </div>
-          <div className="bg-red-500 text-white p-4 rounded shadow">
-            <h3 className="text-xl font-semibold mb-2">Absent Days</h3>
-            <p className="text-lg">{absentDays}</p>
-          </div>
-          <div className="bg-yellow-500 text-white p-4 rounded shadow">
-            <h3 className="text-xl font-semibold mb-2">Available Leave</h3>
-            <p className="text-lg">{availableLeave}</p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div className="bg-sky-500 text-white p-4 rounded shadow">
+                <h3 className="text-xl font-semibold mb-2">Total Days</h3>
+                <p className="text-lg">{totalDays}</p>
+              </div>
+              <div className="bg-green-500 text-white p-4 rounded shadow">
+                <h3 className="text-xl font-semibold mb-2">Present Days</h3>
+                <p className="text-lg">{presentDays}</p>
+              </div>
+              <div className="bg-red-500 text-white p-4 rounded shadow">
+                <h3 className="text-xl font-semibold mb-2">Absent Days</h3>
+                <p className="text-lg">{absentDays}</p>
+              </div>
+              <div className="bg-yellow-500 text-white p-4 rounded shadow">
+                <h3 className="text-xl font-semibold mb-2">Available Leave</h3>
+                <p className="text-lg">{availableLeave}</p>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-        </div>
-        
+
         <div className="lg:w-3/3 flex justify-center items-center mt-6 lg:mt-0 lg:ml-6">
-          <div style={{ width: '230px', height: '270px' }}>
-            <Pie  data={pieData} options={pieOptions} />
+          <div style={{ width: "230px", height: "270px" }}>
+            <Pie data={pieData} options={pieOptions} />
           </div>
-          
         </div>
       </div>
-     
     </div>
   );
 }

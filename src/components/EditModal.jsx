@@ -1,24 +1,24 @@
-import React, { useState } from 'react';
-import PropTypes from 'prop-types';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { TimePicker } from '@mui/x-date-pickers/TimePicker';
-import dayjs from 'dayjs';
+import { useState } from "react";
+import PropTypes from "prop-types";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { TimePicker } from "@mui/x-date-pickers/TimePicker";
+import dayjs from "dayjs";
 
 const EditModal = ({ item, onSave, onClose }) => {
   const [formData, setFormData] = useState({
-    name: item.name || '',
+    name: item.name || "",
     inDateTime: item.inDateTime ? dayjs(item.inDateTime) : dayjs(),
     outDateTime: item.outDateTime ? dayjs(item.outDateTime) : dayjs(),
   });
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
-  };
+  // const handleChange = (e) => {
+  //   const { name, value } = e.target;
+  //   setFormData({
+  //     ...formData,
+  //     [name]: value,
+  //   });
+  // };
 
   const handleTimeChange = (name, newValue) => {
     setFormData({
@@ -33,30 +33,53 @@ const EditModal = ({ item, onSave, onClose }) => {
   };
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50" aria-modal="true">
+    <div
+      className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50"
+      aria-modal="true"
+    >
       <div className="bg-white p-6 rounded-lg shadow-lg">
-        <h2 className="text-2xl mb-4 text-center font-bold text-gray-700">EDIT</h2>
+        <h2 className="text-2xl mb-4 text-center font-bold text-gray-700">
+          EDIT
+        </h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
-            <p className='font-sans font-bold'>Jose Louis</p>
+            <p className="font-sans font-bold">Jose Louis</p>
             <p>Trainee</p>
           </div>
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <div className="flex justify-between mb-4">
               <div className="w-1/2 pr-2">
-                <label htmlFor="inDateTime" className="block mb-2">In Time</label>
+                <label htmlFor="inDateTime" className="block mb-2">
+                  In Time
+                </label>
                 <TimePicker
                   value={formData.inDateTime}
-                  onChange={(newValue) => handleTimeChange('inDateTime', newValue)}
-                  renderInput={(params) => <input {...params} className="w-full p-2 border-2 rounded text-sm outline-none border-gray-300" />}
+                  onChange={(newValue) =>
+                    handleTimeChange("inDateTime", newValue)
+                  }
+                  renderInput={(params) => (
+                    <input
+                      {...params}
+                      className="w-full p-2 border-2 rounded text-sm outline-none border-gray-300"
+                    />
+                  )}
                 />
               </div>
               <div className="w-1/2 pl-2">
-                <label htmlFor="outDateTime" className="block mb-2">Out Time</label>
+                <label htmlFor="outDateTime" className="block mb-2">
+                  Out Time
+                </label>
                 <TimePicker
                   value={formData.outDateTime}
-                  onChange={(newValue) => handleTimeChange('outDateTime', newValue)}
-                  renderInput={(params) => <input {...params} className="w-full p-2 border-2 rounded text-sm outline-none border-gray-300" />}
+                  onChange={(newValue) =>
+                    handleTimeChange("outDateTime", newValue)
+                  }
+                  renderInput={(params) => (
+                    <input
+                      {...params}
+                      className="w-full p-2 border-2 rounded text-sm outline-none border-gray-300"
+                    />
+                  )}
                 />
               </div>
             </div>
@@ -94,7 +117,7 @@ EditModal.propTypes = {
 
 EditModal.defaultProps = {
   item: {
-    name: '',
+    name: "",
     inDateTime: dayjs().toISOString(),
     outDateTime: dayjs().toISOString(),
   },
