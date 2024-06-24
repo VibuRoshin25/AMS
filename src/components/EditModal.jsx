@@ -7,9 +7,6 @@ import dayjs from "dayjs";
 
 const EditModal = ({ item, onSave, onClose }) => {
   const [formData, setFormData] = useState({
-    name: item.name || "",
-    inDateTime: item.inDateTime ? dayjs(item.inDateTime) : dayjs(),
-    outDateTime: item.outDateTime ? dayjs(item.outDateTime) : dayjs(),
     id: item.id,
     name: item.name || "",
     role: item.role || "",

@@ -1,5 +1,3 @@
-import Modal from "react-modal";
-
 Modal.setAppElement("#root");
 
 const CustomModal = ({ isOpen, onClose, children }) => {
