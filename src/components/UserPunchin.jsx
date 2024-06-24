@@ -1,10 +1,7 @@
 import { useState } from "react";
-<<<<<<< HEAD
 import { getDate, getTime, calculateDuration } from "../utils/dateMethods";
 import { db } from "./firebase/firebase";
 import { setDoc, collection, doc } from "firebase/firestore";
-=======
->>>>>>> dev
 
 const UserPunchin = ({ sid }) => {
   const [isPunchedIn, setIsPunchedIn] = useState(false);
@@ -13,15 +10,13 @@ const UserPunchin = ({ sid }) => {
   const [totalDuration, setTotalDuration] = useState(null);
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
 
-<<<<<<< HEAD
   const handlePunch = async () => {
     try {
-      const id = "55";
       const currentTime = new Date();
       const formattedDate = getDate(currentTime);
       const formattedTime = getTime(currentTime);
       const collectionRef = collection(db, "attendance");
-      const docRef = doc(collectionRef, id);
+      const docRef = doc(collectionRef, sid);
 
       if (!isPunchedIn) {
         setPunchInTime(currentTime);
@@ -69,46 +64,6 @@ const UserPunchin = ({ sid }) => {
           <a className="block text-black text-sm">
             {punchOutTime ? getTime(punchOutTime) : "--:--"}
           </a>
-=======
-  const handlePunch = () => {
-    const currentTime = new Date();
-    if (!isPunchedIn) {
-      setPunchInTime(currentTime);
-      setPunchOutTime(null);
-      setTotalDuration(null);
-      setIsPunchedIn(true);
-    } else {
-      setPunchOutTime(currentTime);
-      const duration = calculateTotalDuration(punchInTime, currentTime);
-      setTotalDuration(duration);
-      setIsPunchedIn(false);
-      setIsButtonDisabled(true);
-    }
-  };
-
-  const calculateTotalDuration = (start, end) => {
-    const difference = end - start;
-    const hours = Math.floor(difference / (1000 * 60 * 60));
-    const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
-    return `${hours} hours ${minutes} min`;
-  };
-
-  const formatTime = (date) => {
-    if (!date) return "--";
-    return date.toLocaleTimeString();
-  };
-
-  return (
-    <div className="flex flex-col items-center justify-center w-1/3 h-auto bg-gradient-to-r  p-6 mt-4 rounded-lg shadow-lg">
-      <div className="flex justify-between w-full mb-6">
-        <div className="text-center">
-          <p className=" font-bold text-lg text-sky-500">Punch In</p>
-          <a className="block text-black text-sm">{formatTime(punchInTime)}</a>
-        </div>
-        <div className="text-center">
-          <p className=" font-bold text-lg text-sky-500">Punch Out</p>
-          <a className="block text-black text-sm">{formatTime(punchOutTime)}</a>
->>>>>>> dev
         </div>
       </div>
       <button
