@@ -14,31 +14,37 @@ const UserPunchin = ({ sid }) => {
     try {
       const id = "55";
       const currentTime = new Date();
+      const formattedDate = getDate(currentTime);
+      const formattedTime = getTime(currentTime);
       const collectionRef = collection(db, "attendance");
       const docRef = doc(collectionRef, id);
 
       if (!isPunchedIn) {
-        console.log(currentTime);
         setPunchInTime(currentTime);
-        console.log(getTime(punchInTime).toString);
-        setPunchOutTime(null);
         setTotalDuration(null);
         setIsPunchedIn(true);
-        console.log("punchInTime", punchInTime);
+
         const data = {
           [getDate(currentTime)]: {
-            punchin: String(getTime(punchInTime)),
-            punchout: getTime(punchOutTime),
+            punchin: formattedTime,
           },
         };
-        console.log(data);
-        await setDoc(docRef, data);
+
+        await setDoc(docRef, data, { merge: true });
       } else {
         setPunchOutTime(currentTime);
         const duration = calculateDuration(punchInTime, currentTime);
         setTotalDuration(duration);
         setIsPunchedIn(false);
         setIsButtonDisabled(true);
+
+        const updateData = {
+          [formattedDate]: {
+            punchout: formattedTime,
+            duration: duration,
+          },
+        };
+        await setDoc(docRef, updateData, { merge: true });
       }
     } catch (error) {
       console.error(error);
