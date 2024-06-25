@@ -6,6 +6,7 @@ import Protected from "./pages/Protected";
 import LoginPage from "./pages/LoginPage";
 import AdminPage from "./pages/AdminPage";
 import UserPage from "./pages/UserPage";
+import LeavesPage from "./pages/LeavesPage";
 
 function App() {
   const router = createBrowserRouter([
@@ -22,10 +23,18 @@ function App() {
       ),
     },
     {
-      path: "User",
+      path: "/user",
       element: (
         <Protected>
           <UserPage />
+        </Protected>
+      ),
+    },
+    {
+      path: "/leave-policies",
+      element: (
+        <Protected>
+          <LeavesPage />
         </Protected>
       ),
     },
