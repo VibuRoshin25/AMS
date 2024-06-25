@@ -106,8 +106,8 @@ export default function Recordstable() {
                         e.target.value === "All Roles" ? "All" : e.target.value
                       )
                     }
-                    className="p-1 sm:p-2 pr-0 border-none rounded bg-sky-500 text-white text-center"
-                  >
+                    className="p-1 sm:p-2 pr-0 border-none rounded bg-sky-500 text-white text-center"   >
+               
                     {roles.map((role) => (
                       <option key={role} value={role}>
                         {role}
