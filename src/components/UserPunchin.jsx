@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { getDate, getTime, calculateDuration } from "../utils/dateMethods";
 import { db } from "./firebase/firebase";
 import { getDoc, setDoc, collection, doc } from "firebase/firestore";
+// import { isWithinRadius } from "../utils/locationMethods";
 import dayjs from "dayjs";
 
 const UserPunchin = ({ sid }) => {
@@ -49,6 +50,7 @@ const UserPunchin = ({ sid }) => {
       const formattedTime = getTime(currentTime);
       const collectionRef = collection(db, "attendance");
       const docRef = doc(collectionRef, sid);
+      // const validLocation = await isWithinRadius();
 
       if (!isPunchedIn) {
         setPunchInTime(currentTime);
@@ -58,6 +60,7 @@ const UserPunchin = ({ sid }) => {
         const data = {
           [formattedDate]: {
             punchin: formattedTime,
+            // onSite: validLocation ? true : false,
           },
         };
 
