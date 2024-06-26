@@ -1,38 +1,88 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { getDate, getTime, calculateDuration } from "../utils/dateMethods";
+import { db } from "./firebase/firebase";
+import { getDoc, setDoc, collection, doc } from "firebase/firestore";
+// import { isWithinRadius } from "../utils/locationMethods";
+import dayjs from "dayjs";
 
-const UserPunchin = () => {
+const UserPunchin = ({ sid }) => {
   const [isPunchedIn, setIsPunchedIn] = useState(false);
   const [punchInTime, setPunchInTime] = useState(null);
   const [punchOutTime, setPunchOutTime] = useState(null);
   const [totalDuration, setTotalDuration] = useState(null);
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
 
-  const handlePunch = () => {
-    const currentTime = new Date();
-    if (!isPunchedIn) {
-      setPunchInTime(currentTime);
-      setPunchOutTime(null);
-      setTotalDuration(null);
-      setIsPunchedIn(true);
-    } else {
-      setPunchOutTime(currentTime);
-      const duration = calculateTotalDuration(punchInTime, currentTime);
-      setTotalDuration(duration);
-      setIsPunchedIn(false);
-      setIsButtonDisabled(true);
+  useEffect(() => {
+    const fetchAttendanceRecord = async () => {
+      try {
+        const currentTime = new Date();
+        const formattedDate = getDate(currentTime);
+        const docRef = doc(db, "attendance", sid);
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          if (data[formattedDate]) {
+            const record = data[formattedDate];
+            if (record.punchin && !record.punchout) {
+              setPunchInTime(dayjs(record.punchin, "hh:mm A").toDate());
+              setIsPunchedIn(true);
+            } else if (record.punchin && record.punchout) {
+              setPunchInTime(dayjs(record.punchin, "hh:mm A").toDate());
+              setPunchOutTime(dayjs(record.punchout, "hh:mm A").toDate());
+              setTotalDuration(record.duration);
+              setIsButtonDisabled(true);
+            }
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching attendance record: ", error);
+      }
+    };
+
+    fetchAttendanceRecord();
+  }, [sid]);
+
+  const handlePunch = async () => {
+    try {
+      const currentTime = new Date();
+      const formattedDate = getDate(currentTime);
+      const formattedTime = getTime(currentTime);
+      const collectionRef = collection(db, "attendance");
+      const docRef = doc(collectionRef, sid);
+      // const validLocation = await isWithinRadius();
+
+      if (!isPunchedIn) {
+        setPunchInTime(currentTime);
+        setTotalDuration(null);
+        setIsPunchedIn(true);
+
+        const data = {
+          [formattedDate]: {
+            punchin: formattedTime,
+            // onSite: validLocation ? true : false,
+          },
+        };
+
+        await setDoc(docRef, data, { merge: true });
+      } else {
+        setPunchOutTime(currentTime);
+        const duration = calculateDuration(punchInTime, currentTime);
+        setTotalDuration(duration);
+        setIsPunchedIn(false);
+        setIsButtonDisabled(true);
+
+        const updateData = {
+          [formattedDate]: {
+            punchout: formattedTime,
+            duration: duration,
+          },
+        };
+        await setDoc(docRef, updateData, { merge: true });
+      }
+    } catch (error) {
+      console.error(error);
     }
-  };
-
-  const calculateTotalDuration = (start, end) => {
-    const difference = end - start;
-    const hours = Math.floor(difference / (1000 * 60 * 60));
-    const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
-    return `${hours} hours ${minutes} min`;
-  };
-
-  const formatTime = (date) => {
-    if (!date) return "--";
-    return date.toLocaleTimeString();
   };
 
   return (
@@ -40,11 +90,15 @@ const UserPunchin = () => {
       <div className="flex justify-between w-full mb-6">
         <div className="text-center">
           <p className="font-bold text-lg text-sky-500">Punch In</p>
-          <a className="block text-black text-sm">{formatTime(punchInTime)}</a>
+          <a className="block text-black text-sm">
+            {punchInTime ? getTime(punchInTime) : "--:--"}
+          </a>
         </div>
         <div className="text-center">
           <p className="font-bold text-lg text-sky-500">Punch Out</p>
-          <a className="block text-black text-sm">{formatTime(punchOutTime)}</a>
+          <a className="block text-black text-sm">
+            {punchOutTime ? getTime(punchOutTime) : "--:--"}
+          </a>
         </div>
       </div>
       <button

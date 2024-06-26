@@ -9,7 +9,7 @@ const Protected = ({ children }) => {
 
   if (!user) {
     // If user is not authenticated, redirect to login and show toast message
-    toast.error("You need to log in to access this page.");
+    // toast.error("You need to log in to access this page.");
     return <Navigate to="/login" replace />;
   } else {
     return children;

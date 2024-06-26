@@ -7,9 +7,6 @@ import dayjs from "dayjs";
 
 const EditModal = ({ item, onSave, onClose }) => {
   const [formData, setFormData] = useState({
-    name: item.name || "",
-    inDateTime: item.inDateTime ? dayjs(item.inDateTime) : dayjs(),
-    outDateTime: item.outDateTime ? dayjs(item.outDateTime) : dayjs(),
     id: item.id,
     name: item.name || "",
     role: item.role || "",
@@ -44,12 +41,14 @@ const EditModal = ({ item, onSave, onClose }) => {
     >
       <div className="bg-white p-6 rounded-lg shadow-lg">
         <h2 className="text-2xl mb-4 text-center font-bold text-gray-700">
-          EDIT
+          Request to Edit
         </h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
-            <p className="font-sans font-bold">Jose Louis</p>
-            <p>Trainee</p>
+            <p className="font-sans font-bold text-center text-2xl">
+              {formData.name}
+            </p>
+            <p className="text-center text-md">{formData.role}</p>
           </div>
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <div className="flex justify-between mb-4">

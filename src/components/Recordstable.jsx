@@ -21,8 +21,13 @@ const statuses = [
   "Absent",
   "Present",
 ];
+import { db } from "./firebase/firebase";
+import { collection, getDocs } from "firebase/firestore";
+import EditModal from "./EditModal";
+import { getDate } from "../utils/dateMethods";
 
-export default function Recordstable() {
+export default function Recordstable({ selectedDate }) {
+  const selDate = getDate(selectedDate.startDate);
   const roles = [
     "All Roles",
     "Junior Software Developer",
@@ -64,38 +69,56 @@ export default function Recordstable() {
 
   useEffect(() => {
     const fetchRecords = async () => {
-      const recordsCollection = collection(db, "employees");
-      const recordsSnapshot = await getDocs(recordsCollection);
-      const recordsList = recordsSnapshot.docs.map((doc) => ({
+      const employeesCollection = collection(db, "employees");
+      const attendanceCollection = collection(db, "attendance");
+
+      const [employeesSnapshot, attendanceSnapshot] = await Promise.all([
+        getDocs(employeesCollection),
+        getDocs(attendanceCollection),
+      ]);
+
+      const employeesList = employeesSnapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
       }));
-      setRecords(recordsList);
+
+      const attendanceList = attendanceSnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+
+      const employeeMap = new Map(employeesList.map((item) => [item.id, item]));
+      const attendanceMap = new Map(
+        attendanceList.map((item) => [item.id, item])
+      );
+
+      const combinedRecords = [...attendanceMap.keys()].map((id) => {
+        const employee = employeeMap.get(id) || {};
+        const attendance = attendanceMap.get(id) || {};
+        // const attendanceRecord = attendance[selectedDate] || {};
+        return {
+          ...employee,
+          ...attendance[selDate],
+        };
+      });
+
+      console.log(selDate);
+      setRecords(combinedRecords);
     };
 
     fetchRecords();
-  }, []);
+  }, [selectedDate]);
 
-  const calculateTotalHours = (checkin, checkout) => {
-    const checkinTime = new Date(`01/01/2000 ${checkin}`);
-    const checkoutTime = new Date(`01/01/2000 ${checkout}`);
-    const diffInMs = checkoutTime - checkinTime;
-    const diffInMinutes = diffInMs / (1000 * 60);
-    const hours = Math.floor(diffInMinutes / 60);
-    const minutes = Math.floor(diffInMinutes % 60);
-    return `${hours} hrs ${minutes} mins`;
-  };
-
-  const updateStatusForLateArrival = (checkin, status) => {
-    return checkin > "09:00 AM" ? "Late arrival" : status;
+  const updateStatusForLateArrival = (punchin, status) => {
+    return punchin > "09:00 AM" ? "Late arrival" : status;
   };
 
   const filteredRecords = records.filter((record) => {
     return (
       (selectedRole === "All" || record.role === selectedRole) &&
       (selectedDepartment === "All" ||
-        record.Department === selectedDepartment) &&
-      (selectedStatus === "All" || record.Status === selectedStatus)
+        record.department === selectedDepartment) &&
+      (selectedStatus === "All" || record.status === selectedStatus)
     );
   });
 
@@ -107,6 +130,24 @@ export default function Recordstable() {
 
   const handleNextPage = () => {
     setCurrentPage((prevPage) => Math.min(prevPage + 1, totalPages));
+  };
+
+  const handleEditClick = (record) => {
+    setEditRecord(record);
+    setIsModalOpen(true);
+  };
+
+  const handleSaveEdit = (updatedRecord) => {
+    setRecords((prevRecords) =>
+      prevRecords.map((record) =>
+        record.id === updatedRecord.id ? updatedRecord : record
+      )
+    );
+    setIsModalOpen(false);
+  };
+
+  const closeEditModal = () => {
+    setIsModalOpen(false);
   };
 
   const startIndex = (currentPage - 1) * recordsPerPage;
@@ -209,45 +250,50 @@ export default function Recordstable() {
                 "bg-yellow-200 text-yellow-500 py-1 px-3 rounded text-lg";
             }
 
-            return (
-              <tr key={record.id}>
-                <td className="py-4 px-2 sm:px-4 border-b border-gray-300 text-center text-lg">
-                  {record.id}
-                </td>
-                <td className="py-4 px-2 sm:px-6 border-b border-gray-300 text-center text-lg">
-                  {record.Employee}
-                </td>
-                <td className="py-4 px-2 sm:px-4 border-b border-gray-300 text-center text-lg">
-                  {record.role}
-                </td>
-                <td className="py-4 px-2 sm:px-6 border-b border-gray-300 text-center text-lg">
-                  {record.Department}
-                </td>
-                <td className="py-4 px-2 sm:px-6 border-b border-gray-300 text-center text-lg">
-                  {record.Date}
-                </td>
-                <td
-                  className={`py-4 px-2 sm:px-6 border-b border-gray-300 text-center text-lg`}
-                >
-                  <button className={statusClasses}>{status}</button>
-                </td>
-                <td className="py-4 px-2 sm:px-6 border-b border-gray-300 text-center text-lg">
-                  {status === "Absent" ? "--" : record.Checkin}
-                </td>
-                <td className="py-4 px-2 sm:px-6 border-b border-gray-300 text-center text-lg">
-                  {status === "Absent" ? "--" : record.CheckOut}
-                </td>
-                <td className="py-4 px-2 sm:px-6 border-b border-gray-300 text-center text-lg">
-                  {status === "Absent"
-                    ? "--"
-                    : calculateTotalHours(record.Checkin, record.CheckOut)}
-                </td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
-      <div className="flex justify-between items-center w-full mt-4 px-6">
+                return (
+                  <tr key={record.id}>
+                    <td className="py-2 px-2 sm:px-4 border-b border-gray-300 text-center">
+                      {record.id}
+                    </td>
+                    <td className="py-2 px-2 sm:px-6 border-b border-gray-300 text-center">
+                      {record.name}
+                    </td>
+                    <td className="py-2 px-2 sm:px-4 border-b border-gray-300 text-center">
+                      {record.role}
+                    </td>
+                    <td className="py-2 px-2 sm:px-6 border-b border-gray-300 text-center">
+                      {record.department}
+                    </td>
+                    <td
+                      className={`py-2 px-2 sm:px-6 border-b border-gray-300 text-center`}
+                    >
+                      <button className={statusClasses}>{status}</button>
+                    </td>
+                    <td className="py-2 px-2 sm:px-6 border-b border-gray-300 text-center">
+                      {status === "Absent" ? "--" : record.punchin}
+                    </td>
+                    <td className="py-2 px-2 sm:px-6 border-b border-gray-300 text-center">
+                      {status === "Absent" ? "--" : record.punchout}
+                    </td>
+                    <td className="py-2 px-2 sm:px-6 border-b border-gray-300 text-center">
+                      {status === "Absent" ? "--" : record.duration}
+                    </td>
+                    <td className="py-2 px-2 sm:px-6 border-b border-gray-300 text-center">
+                      <button
+                        onClick={() => handleEditClick(record)}
+                        className="bg-blue-500 text-white px-4 py-2 rounded"
+                      >
+                        Edit
+                      </button>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div className="flex justify-between items-center mt-4">
         <button onClick={handlePreviousPage} className="p-2">
           <FcPrevious size={24} />
         </button>
