@@ -228,50 +228,47 @@ export default function Recordstable({ selectedDate }) {
               statusClasses =
                 "bg-yellow-200 text-yellow-500 py-1 px-3 rounded text-lg";
             }
-
-                return (
-                  <tr key={record.id}>
-                    <td className="py-2 px-2 sm:px-4 border-b border-gray-300 text-center">
-                      {record.id}
-                    </td>
-                    <td className="py-2 px-2 sm:px-6 border-b border-gray-300 text-center">
-                      {record.name}
-                    </td>
-                    <td className="py-2 px-2 sm:px-4 border-b border-gray-300 text-center">
-                      {record.role}
-                    </td>
-                    <td className="py-2 px-2 sm:px-6 border-b border-gray-300 text-center">
-                      {record.department}
-                    </td>
-                    <td
-                      className={`py-2 px-2 sm:px-6 border-b border-gray-300 text-center`}
-                    >
-                      <button className={statusClasses}>{status}</button>
-                    </td>
-                    <td className="py-2 px-2 sm:px-6 border-b border-gray-300 text-center">
-                      {status === "Absent" ? "--" : record.punchin}
-                    </td>
-                    <td className="py-2 px-2 sm:px-6 border-b border-gray-300 text-center">
-                      {status === "Absent" ? "--" : record.punchout}
-                    </td>
-                    <td className="py-2 px-2 sm:px-6 border-b border-gray-300 text-center">
-                      {status === "Absent" ? "--" : record.duration}
-                    </td>
-                    <td className="py-2 px-2 sm:px-6 border-b border-gray-300 text-center">
-                      <button
-                        onClick={() => handleEditClick(record)}
-                        className="bg-blue-500 text-white px-4 py-2 rounded"
-                      >
-                        Edit
-                      </button>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
-      </div>
+            return (
+              <tr key={record.id}>
+                <td className="py-2 px-2 sm:px-4 border-b border-gray-300 text-center">
+                  {record.id}
+                </td>
+                <td className="py-2 px-2 sm:px-6 border-b border-gray-300 text-center">
+                  {record.name}
+                </td>
+                <td className="py-2 px-2 sm:px-4 border-b border-gray-300 text-center">
+                  {record.role}
+                </td>
+                <td className="py-2 px-2 sm:px-6 border-b border-gray-300 text-center">
+                  {record.department}
+                </td>
+                <td
+                  className={`py-2 px-2 sm:px-6 border-b border-gray-300 text-center`}
+                >
+                  <button className={statusClasses}>{status}</button>
+                </td>
+                <td className="py-2 px-2 sm:px-6 border-b border-gray-300 text-center">
+                  {status === "Absent" ? "--" : record.punchin}
+                </td>
+                <td className="py-2 px-2 sm:px-6 border-b border-gray-300 text-center">
+                  {status === "Absent" ? "--" : record.punchout}
+                </td>
+                <td className="py-2 px-2 sm:px-6 border-b border-gray-300 text-center">
+                  {status === "Absent" ? "--" : record.duration}
+                </td>
+                <td className="py-2 px-2 sm:px-6 border-b border-gray-300 text-center">
+                  <button
+                    onClick={() => handleEditClick(record)}
+                    className="bg-blue-500 text-white px-4 py-2 rounded"
+                  >
+                    Edit
+                  </button>
+                </td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
       <div className="flex justify-between items-center mt-4">
         <button onClick={handlePreviousPage} className="p-2">
           <FcPrevious size={24} />
