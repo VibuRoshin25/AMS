@@ -8,7 +8,7 @@ const useFetchCollection = (collectionName) => {
   useEffect(() => {
     const fetchData = async () => {
       const querySnapshot = await getDocs(collection(db, collectionName));
-      setData(querySnapshot.docs.map((doc) => doc.data()));
+      setData(querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() })));
     };
 
     fetchData();

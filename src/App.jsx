@@ -7,6 +7,8 @@ import LoginPage from "./pages/LoginPage";
 import AdminPage from "./pages/AdminPage";
 import UserPage from "./pages/UserPage";
 import LeavesPage from "./pages/LeavesPage";
+import HolidaysPage from "./pages/HolidaysPage";
+import ShiftsPage from "./pages/ShiftsPage";
 
 function App() {
   const router = createBrowserRouter([
@@ -35,6 +37,22 @@ function App() {
       element: (
         <Protected>
           <LeavesPage />
+        </Protected>
+      ),
+    },
+    {
+      path: "/holidays",
+      element: (
+        <Protected>
+          <HolidaysPage />
+        </Protected>
+      ),
+    },
+    {
+      path: "/shifts",
+      element: (
+        <Protected>
+          <ShiftsPage />
         </Protected>
       ),
     },
