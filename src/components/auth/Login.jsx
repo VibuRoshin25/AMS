@@ -18,7 +18,7 @@ const Login = () => {
         const user = userCredential.user;
         toast.success(' Login successfully!', {
           position: "top-center",
-          autoClose: 5000,
+          autoClose: 1000,
           hideProgressBar: false,
           closeOnClick: true,
           pauseOnHover: true,
@@ -35,7 +35,7 @@ const Login = () => {
         const errorMessage = error.message;
         toast.error("Invalid Credentials.", {
           position: "top-center",
-          autoClose: 5000,
+          autoClose: 1000,
           hideProgressBar: false,
           closeOnClick: true,
           pauseOnHover: true,
