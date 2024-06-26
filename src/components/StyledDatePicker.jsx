@@ -1,26 +1,15 @@
-import { useState } from "react";
 import DatePicker from "react-tailwindcss-datepicker";
 
-const date = new Date();
-
-const StyledDatePicker = () => {
-  const [value, setValue] = useState({
-    startDate: date,
-    endDate: date,
-  });
-
-  const handleValueChange = (newValue) => {
-    console.log("newValue:", newValue);
-    setValue(newValue);
-  };
+const StyledDatePicker = ({selectedDate,onSelectDate }) => {
+ 
   return (
     <div className="w-1/4">
       <DatePicker
         useRange={false}
         primaryColor={"sky"}
         showShortcuts={true}
-        value={value}
-        onChange={handleValueChange}
+        value={selectedDate}
+        onChange={onSelectDate}
         configs={{
           shortcuts: {
             today: "Today",

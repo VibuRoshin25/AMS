@@ -5,14 +5,23 @@ import CreateEmployeeModal from "../components/modals/CreateEmployeeModal";
 import PageOutline from "../components/PageOutline";
 
 export default function AdminPage() {
+  const currentDate = new Date();
+  const [selectedDate, setSelectedDate] = useState({
+    startDate: currentDate,
+    endDate: currentDate,
+  });
+
   return (
     <PageOutline>
       <div className="flex justify-center gap-20 mt-8">
-        <StyledDatePicker />
+        <StyledDatePicker
+          selectedDate={selectedDate}
+          onSelectDate={setSelectedDate}
+        />{" "}
         <SearchBar />
         <CreateEmployeeModal />
       </div>
-      <Recordstable />
+      <Recordstable selectedDate={selectedDate} />
     </PageOutline>
   );
 }

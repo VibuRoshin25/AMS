@@ -12,7 +12,7 @@ export default function UserProfile() {
 
   const records = [
     { id: 1, Employee: "Sabari", Date: "01/03/2024", Status: "Present" },
-    { id: 2, Employee: "Vino kishore", Date: "02/03/2024", Status: "Present" },
+    { id: 2, Employee: "Vino Kishore", Date: "02/03/2024", Status: "Present" },
     { id: 3, Employee: "Aishwarya", Date: "03/03/2024", Status: "Absent" },
     { id: 4, Employee: "Ganga", Date: "04/03/2024", Status: "Present" },
     { id: 5, Employee: "Yamuna", Date: "05/03/2024", Status: "Leave" },
@@ -74,17 +74,17 @@ export default function UserProfile() {
   };
 
   return (
-    <div className="container mx-auto p-4">
-      <div className="bg-white p-6 rounded shadow-lg flex flex-col lg:flex-row">
-        <div className="flex flex-col  lg:w-1/3">
+    <div className="container mx-auto p-4 flex flex-wrap">
+      <div className="bg-white p-6 rounded-2xl shadow-lg flex flex-col lg:flex-row">
+        <div className="flex flex-col lg:w-3/3">
           <div className="flex justify-between">
             <div className="flex justify-between gap-12">
               <img
                 src=""
-                alt="        Profile"
+                alt="Profile"
                 className="w-24 h-24 rounded-full border-4 border-sky-500"
               />
-              <div className="text-center lg:text-top">
+              <div className="text-center lg:text-left">
                 <h2 className="text-3xl font-bold text-sky-500">
                   Vino Kishore
                 </h2>

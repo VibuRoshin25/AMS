@@ -17,6 +17,7 @@
     "@mui/material": "^5.15.20",
     "@mui/x-date-pickers": "^7.7.0",
     "chart": "^0.1.2",
+    "classnames": "^2.5.1",
     "dayjs": "^1.11.11",
     "firebase": "^10.12.2",
     "prop-types": "^15.8.1",

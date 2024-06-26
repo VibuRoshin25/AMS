@@ -10,6 +10,7 @@ import LeavesPage from "./pages/LeavesPage";
 import HolidaysPage from "./pages/HolidaysPage";
 import ShiftsPage from "./pages/ShiftsPage";
 import NotFoundPage from "./pages/NotFoundPage";
+import UserTable from "./components/UserTable";
 
 function App() {
   const router = createBrowserRouter([

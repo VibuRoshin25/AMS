@@ -14,7 +14,7 @@ const Header = () => {
   };
 
   return (
-    <header className="w-[98%] relative rounded-full drop-shadow-xl bg-sky-200 flex mt-3 mb-4 justify-between items-center h-16 shadow-md">
+    <header className="w-full drop-shadow-xl bg-sky-200 flex  mb-4  justify-between items-center h-16 shadow-md">
       <div className="flex items-center">
         <img
           src={logo} // Replace with your logo URL
@@ -22,10 +22,10 @@ const Header = () => {
           className="h-16 py-4 px-2 ml-2"
         />
       </div>
-      <h1 className="absolute left-1/2 transform -translate-x-1/2 text-xl font-bold">
+      <h1 className="left-1/2 transform -translate-x-1/2 text-xl font-bold">
         Attendance Management System
       </h1>
-      <Button onClick={handleLogout} className="mr-2">
+      <Button onClick={handleLogout} className="">
         Logout
       </Button>
     </header>

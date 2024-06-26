@@ -8,6 +8,7 @@ import StyledTD from "./StyledTD";
 import StyledTH from "./StyledTH";
 import FieldSelector from "./FieldSelector";
 import Table from "./Table";
+import { getDate } from "../utils/dateMethods";
 
 export default function Recordstable() {
   const [records, setRecords] = useState([]);
@@ -22,28 +23,56 @@ export default function Recordstable() {
 
   useEffect(() => {
     const fetchRecords = async () => {
-      const recordsCollection = collection(db, "employees");
-      const recordsSnapshot = await getDocs(recordsCollection);
-      const recordsList = recordsSnapshot.docs.map((doc) => ({
+      const employeesCollection = collection(db, "employees");
+      const attendanceCollection = collection(db, "attendance");
+
+      const [employeesSnapshot, attendanceSnapshot] = await Promise.all([
+        getDocs(employeesCollection),
+        getDocs(attendanceCollection),
+      ]);
+
+      const employeesList = employeesSnapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
       }));
-      setRecords(recordsList);
+
+      const attendanceList = attendanceSnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+
+      const employeeMap = new Map(employeesList.map((item) => [item.id, item]));
+      const attendanceMap = new Map(
+        attendanceList.map((item) => [item.id, item])
+      );
+
+      const combinedRecords = [...attendanceMap.keys()].map((id) => {
+        const employee = employeeMap.get(id) || {};
+        const attendance = attendanceMap.get(id) || {};
+        // const attendanceRecord = attendance[selectedDate] || {};
+        return {
+          ...employee,
+          ...attendance[selDate],
+        };
+      });
+
+      console.log(selDate);
+      setRecords(combinedRecords);
     };
 
     fetchRecords();
-  }, []);
+  }, [selectedDate]);
 
-  const updateStatusForLateArrival = (checkin, status) => {
-    return checkin > "09:00 AM" ? "Late arrival" : status;
+  const updateStatusForLateArrival = (punchin, status) => {
+    return punchin > "09:00 AM" ? "Late arrival" : status;
   };
 
   const filteredRecords = records.filter((record) => {
     return (
       (selectedRole === "All" || record.role === selectedRole) &&
       (selectedDepartment === "All" ||
-        record.Department === selectedDepartment) &&
-      (selectedStatus === "All" || record.Status === selectedStatus)
+        record.department === selectedDepartment) &&
+      (selectedStatus === "All" || record.status === selectedStatus)
     );
   });
 
@@ -55,6 +84,24 @@ export default function Recordstable() {
 
   const handleNextPage = () => {
     setCurrentPage((prevPage) => Math.min(prevPage + 1, totalPages));
+  };
+
+  const handleEditClick = (record) => {
+    setEditRecord(record);
+    setIsModalOpen(true);
+  };
+
+  const handleSaveEdit = (updatedRecord) => {
+    setRecords((prevRecords) =>
+      prevRecords.map((record) =>
+        record.id === updatedRecord.id ? updatedRecord : record
+      )
+    );
+    setIsModalOpen(false);
+  };
+
+  const closeEditModal = () => {
+    setIsModalOpen(false);
   };
 
   const startIndex = (currentPage - 1) * recordsPerPage;
@@ -129,11 +176,13 @@ export default function Recordstable() {
             record.Checkin,
             record.Status
           );
-          let statusClasses = "bg-green-200 text-green-500 py-1 px-3 rounded";
+          let statusClasses =
+            "bg-green-200 text-green-500 py-1 px-3 rounded text-lg";
           if (status === "Absent") {
-            statusClasses = "bg-red-200 text-red-500 py-1 px-3 rounded";
+            statusClasses = "bg-red-200 text-red-500 py-1 px-3 rounded text-lg";
           } else if (status === "Late arrival") {
-            statusClasses = "bg-yellow-200 text-yellow-500 py-1 px-3 rounded";
+            statusClasses =
+              "bg-yellow-200 text-yellow-500 py-1 px-3 rounded text-lg";
           }
           return (
             <tr key={record.id}>
@@ -152,6 +201,14 @@ export default function Recordstable() {
               <StyledTD>
                 {status === "Absent" ? "--" : record.duration}
               </StyledTD>
+              <StyledTD>
+                <button
+                  onClick={() => handleEditClick(record)}
+                  className="bg-blue-500 text-white px-4 py-2 rounded"
+                >
+                  Edit
+                </button>
+              </StyledTD>
             </tr>
           );
         })}
@@ -161,7 +218,7 @@ export default function Recordstable() {
           <button onClick={handlePreviousPage} className="p-2">
             <FcPrevious size={24} />
           </button>
-          <span className="text-gray-700">
+          <span className="text-gray-700 text-lg">
             Page {currentPage} of {totalPages}
           </span>
           <button onClick={handleNextPage} className="p-2">
