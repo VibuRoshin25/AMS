@@ -3,8 +3,10 @@ import { FcNext, FcPrevious } from "react-icons/fc";
 import { db } from "./firebase/firebase";
 import { collection, getDocs } from "firebase/firestore";
 import EditModal from "./EditModal";
+import { getDate } from "../utils/dateMethods";
 
-export default function Recordstable() {
+export default function Recordstable({ selectedDate }) {
+  const selDate = getDate(selectedDate.startDate);
   const roles = [
     "All Roles",
     "Junior Software Developer",
@@ -46,28 +48,56 @@ export default function Recordstable() {
 
   useEffect(() => {
     const fetchRecords = async () => {
-      const recordsCollection = collection(db, "employees");
-      const recordsSnapshot = await getDocs(recordsCollection);
-      const recordsList = recordsSnapshot.docs.map((doc) => ({
+      const employeesCollection = collection(db, "employees");
+      const attendanceCollection = collection(db, "attendance");
+
+      const [employeesSnapshot, attendanceSnapshot] = await Promise.all([
+        getDocs(employeesCollection),
+        getDocs(attendanceCollection),
+      ]);
+
+      const employeesList = employeesSnapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
       }));
-      setRecords(recordsList);
+
+      const attendanceList = attendanceSnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+
+      const employeeMap = new Map(employeesList.map((item) => [item.id, item]));
+      const attendanceMap = new Map(
+        attendanceList.map((item) => [item.id, item])
+      );
+
+      const combinedRecords = [...attendanceMap.keys()].map((id) => {
+        const employee = employeeMap.get(id) || {};
+        const attendance = attendanceMap.get(id) || {};
+        // const attendanceRecord = attendance[selectedDate] || {};
+        return {
+          ...employee,
+          ...attendance[selDate],
+        };
+      });
+
+      console.log(selDate);
+      setRecords(combinedRecords);
     };
 
     fetchRecords();
-  }, []);
+  }, [selectedDate]);
 
-  const updateStatusForLateArrival = (checkin, status) => {
-    return checkin > "09:00 AM" ? "Late arrival" : status;
+  const updateStatusForLateArrival = (punchin, status) => {
+    return punchin > "09:00 AM" ? "Late arrival" : status;
   };
 
   const filteredRecords = records.filter((record) => {
     return (
       (selectedRole === "All" || record.role === selectedRole) &&
       (selectedDepartment === "All" ||
-        record.Department === selectedDepartment) &&
-      (selectedStatus === "All" || record.Status === selectedStatus)
+        record.department === selectedDepartment) &&
+      (selectedStatus === "All" || record.status === selectedStatus)
     );
   });
 
@@ -136,9 +166,7 @@ export default function Recordstable() {
                     ))}
                   </select>
                 </th>
-                <th className="py-3 px-2 sm:px-6 text-white text-center">
-                  Date
-                </th>
+
                 <th className="py-3 px-2 sm:px-6 text-white text-center">
                   <select
                     value={selectedStatus}
@@ -172,8 +200,8 @@ export default function Recordstable() {
             <tbody>
               {currentRecords.map((record) => {
                 const status = updateStatusForLateArrival(
-                  record.Checkin,
-                  record.Status
+                  record.punchin,
+                  record.status
                 );
                 let statusClasses =
                   "bg-green-200 text-green-500 py-1 px-3 rounded";
@@ -198,19 +226,16 @@ export default function Recordstable() {
                     <td className="py-2 px-2 sm:px-6 border-b border-gray-300 text-center">
                       {record.department}
                     </td>
-                    <td className="py-2 px-2 sm:px-6 border-b border-gray-300 text-center">
-                      {record.date}
-                    </td>
                     <td
                       className={`py-2 px-2 sm:px-6 border-b border-gray-300 text-center`}
                     >
                       <button className={statusClasses}>{status}</button>
                     </td>
                     <td className="py-2 px-2 sm:px-6 border-b border-gray-300 text-center">
-                      {status === "Absent" ? "--" : record.checkin}
+                      {status === "Absent" ? "--" : record.punchin}
                     </td>
                     <td className="py-2 px-2 sm:px-6 border-b border-gray-300 text-center">
-                      {status === "Absent" ? "--" : record.checkOut}
+                      {status === "Absent" ? "--" : record.punchout}
                     </td>
                     <td className="py-2 px-2 sm:px-6 border-b border-gray-300 text-center">
                       {status === "Absent" ? "--" : record.duration}
