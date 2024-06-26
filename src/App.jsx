@@ -9,6 +9,7 @@ import UserPage from "./pages/UserPage";
 import LeavesPage from "./pages/LeavesPage";
 import HolidaysPage from "./pages/HolidaysPage";
 import ShiftsPage from "./pages/ShiftsPage";
+import NotFoundPage from "./pages/NotFoundPage";
 
 function App() {
   const router = createBrowserRouter([
@@ -56,10 +57,10 @@ function App() {
         </Protected>
       ),
     },
-    // {
-    //   path: "*",
-    //   element: <NotFoundPage />,
-    // },
+    {
+      path: "*",
+      element: <NotFoundPage />,
+    },
   ]);
 
   return (
