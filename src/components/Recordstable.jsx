@@ -4,36 +4,25 @@ import { db } from "./firebase/firebase";
 import { collection, getDocs } from "firebase/firestore";
 import EditModal from "./EditModal";
 
-export default function Recordstable() {
-  const roles = [
-    "All Roles",
-    "Junior Software Developer",
-    "Senior Software Developer",
-    "Manager",
-    "MIS",
-    "Intern",
-    "Trainee",
-    "HR",
-    "System Admin",
-    "Accountant",
-    "IT Analyst",
-  ];
-  const departments = [
-    "All Departments",
-    "IT",
-    "HR",
-    "Accounts",
-    "MIS",
-    "Engineering",
-  ];
-  const statuses = [
-    "All Statuses",
-    "Work from home",
-    "Work from office",
-    "Absent",
-    "Late arrival",
-  ];
+const roles = [
+  "All Roles",
+  "Junior software developer",
+  "Senior software developer",
+  "Manager",
+  "MIS",
+  "Intern",
+  "Trainee",
+];
+const departments = ["All Departments", "IT", "HR", "Accounts", "MIS"];
+const statuses = [
+  "All Statuses",
+  "Work from home",
+  "Work from office",
+  "Absent",
+  "Present",
+];
 
+export default function Recordstable() {
   const [records, setRecords] = useState([]);
   const [selectedRole, setSelectedRole] = useState("All");
   const [selectedDepartment, setSelectedDepartment] = useState("All");
@@ -66,8 +55,8 @@ export default function Recordstable() {
     return (
       (selectedRole === "All" || record.role === selectedRole) &&
       (selectedDepartment === "All" ||
-        record.Department === selectedDepartment) &&
-      (selectedStatus === "All" || record.Status === selectedStatus)
+        record.department === selectedDepartment) &&
+      (selectedStatus === "All" || record.status === selectedStatus)
     );
   });
 
@@ -172,8 +161,8 @@ export default function Recordstable() {
             <tbody>
               {currentRecords.map((record) => {
                 const status = updateStatusForLateArrival(
-                  record.Checkin,
-                  record.Status
+                  record.checkin,
+                  record.status
                 );
                 let statusClasses =
                   "bg-green-200 text-green-500 py-1 px-3 rounded";
@@ -210,10 +199,12 @@ export default function Recordstable() {
                       {status === "Absent" ? "--" : record.checkin}
                     </td>
                     <td className="py-2 px-2 sm:px-6 border-b border-gray-300 text-center">
-                      {status === "Absent" ? "--" : record.checkOut}
+                      {status === "Absent" ? "--" : record.checkout}
                     </td>
                     <td className="py-2 px-2 sm:px-6 border-b border-gray-300 text-center">
-                      {status === "Absent" ? "--" : record.duration}
+                      {status === "Absent"
+                        ? "--"
+                        : calculateTotalHours(record.checkin, record.checkout)}
                     </td>
                   </tr>
                 );
