@@ -259,9 +259,7 @@ export default function Recordstable({ selectedDate }) {
                       {status === "Absent" ? "--" : record.punchout}
                     </td>
                     <td className="py-2 px-2 sm:px-6 border-b border-gray-300 text-center">
-                      {status === "Absent"
-                        ? "--"
-                        : calculateTotalHours(record.checkin, record.checkout)}
+                      {status === "Absent" ? "--" : record.duration}
                     </td>
                     <td className="py-2 px-2 sm:px-6 border-b border-gray-300 text-center">
                       <button
