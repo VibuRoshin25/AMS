@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { FcNext, FcPrevious } from "react-icons/fc";
 import { db } from "./firebase/firebase";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs, doc, updateDoc } from "firebase/firestore";
 import EditModal from "./EditModal";
 import { getDate } from "../utils/dateMethods";
 
@@ -136,151 +136,144 @@ export default function Recordstable({ selectedDate }) {
   );
 
   return (
-    <div className="container mx-auto pt-6">
-      <div className="overflow-hidden rounded-xl">
-        <div className="shadow-lg rounded-lg">
-          <table className="min-w-full bg-white">
-            <thead className="bg-sky-300 rounded-t-lg">
-              <tr>
-                <th className="py-3 px-2 sm:px-4 text-white text-center rounded-tl-lg">
-                  ID
-                </th>
-                <th className="py-3 px-2 sm:px-6 text-white text-center">
-                  Employee
-                </th>
-                <th className="py-3 px-2 sm:px-4 text-white text-center">
-                  <select
-                    value={selectedRole}
-                    onChange={(e) =>
-                      setSelectedRole(
-                        e.target.value === "All Roles" ? "All" : e.target.value
-                      )
-                    }
-                    className="p-1 sm:p-2 pr-0 border-none rounded bg-sky-500 text-white text-center"
-                  >
-                    {roles.map((role) => (
-                      <option key={role} value={role}>
-                        {role}
-                      </option>
-                    ))}
-                  </select>
-                </th>
-                <th className="py-3 px-2 sm:px-6 text-white text-center">
-                  <select
-                    value={selectedDepartment}
-                    onChange={(e) =>
-                      setSelectedDepartment(
-                        e.target.value === "All Departments"
-                          ? "All"
-                          : e.target.value
-                      )
-                    }
-                    className="p-1 sm:p-2 pr-0 border-none rounded bg-sky-500 text-white text-center"
-                  >
-                    {departments.map((department) => (
-                      <option key={department} value={department}>
-                        {department}
-                      </option>
-                    ))}
-                  </select>
-                </th>
-
-                <th className="py-3 px-2 sm:px-6 text-white text-center">
-                  <select
-                    value={selectedStatus}
-                    onChange={(e) =>
-                      setSelectedStatus(
-                        e.target.value === "All Statuses"
-                          ? "All"
-                          : e.target.value
-                      )
-                    }
-                    className="p-1 sm:p-2 pr-0 border-none rounded bg-sky-500 text-white text-center"
-                  >
-                    {statuses.map((status) => (
-                      <option key={status} value={status}>
-                        {status}
-                      </option>
-                    ))}
-                  </select>
-                </th>
-                <th className="py-3 px-2 sm:px-6 text-white text-center">
-                  Check In
-                </th>
-                <th className="py-3 px-2 sm:px-6 text-white text-center">
-                  Check Out
-                </th>
-                <th className="py-3 px-2 sm:px-6 text-white text-center">
-                  Work Hours
-                </th>
-                <th className="py-3 px-2 sm:px-6 text-white text-center rounded-tr-lg">
-                  Edit
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {currentRecords.map((record) => {
-                const status = updateStatusForLateArrival(
-                  record.punchin,
-                  record.status
-                );
-                let statusClasses =
-                  "bg-green-200 text-green-500 py-1 px-3 rounded";
-                if (status === "Absent") {
-                  statusClasses = "bg-red-200 text-red-500 py-1 px-3 rounded";
-                } else if (status === "Late arrival") {
-                  statusClasses =
-                    "bg-yellow-200 text-yellow-500 py-1 px-3 rounded";
+    <div className="shadow-lg rounded-lg w-[95%] flex flex-col justify-center items-center mt-12">
+      <table className="min-w-full bg-white">
+        <thead className="bg-sky-300 rounded-t-lg">
+          <tr>
+            <th className="py-4 px-2 sm:px-4 text-white text-center rounded-tl-lg text-lg">
+              ID
+            </th>
+            <th className="py-4 px-2 sm:px-6 text-white text-center text-lg">
+              Employee
+            </th>
+            <th className="py-4 px-2 sm:px-4 text-white text-center text-lg">
+              <select
+                value={selectedRole}
+                onChange={(e) =>
+                  setSelectedRole(
+                    e.target.value === "All Roles" ? "All" : e.target.value
+                  )
                 }
-
-                return (
-                  <tr key={record.id}>
-                    <td className="py-2 px-2 sm:px-4 border-b border-gray-300 text-center">
-                      {record.id}
-                    </td>
-                    <td className="py-2 px-2 sm:px-6 border-b border-gray-300 text-center">
-                      {record.name}
-                    </td>
-                    <td className="py-2 px-2 sm:px-4 border-b border-gray-300 text-center">
-                      {record.role}
-                    </td>
-                    <td className="py-2 px-2 sm:px-6 border-b border-gray-300 text-center">
-                      {record.department}
-                    </td>
-                    <td
-                      className={`py-2 px-2 sm:px-6 border-b border-gray-300 text-center`}
-                    >
-                      <button className={statusClasses}>{status}</button>
-                    </td>
-                    <td className="py-2 px-2 sm:px-6 border-b border-gray-300 text-center">
-                      {status === "Absent" ? "--" : record.punchin}
-                    </td>
-                    <td className="py-2 px-2 sm:px-6 border-b border-gray-300 text-center">
-                      {status === "Absent" ? "--" : record.punchout}
-                    </td>
-                    <td className="py-2 px-2 sm:px-6 border-b border-gray-300 text-center">
-                      {status === "Absent" ? "--" : record.duration}
-                    </td>
-                    <td className="py-2 px-2 sm:px-6 border-b border-gray-300 text-center">
-                      <button
-                        onClick={() => handleEditClick(record)}
-                        className="bg-blue-500 text-white px-4 py-2 rounded"
-                      >
-                        Edit
-                      </button>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
-      </div>
+                className="p-2 sm:p-2 pr-0 border-none rounded bg-sky-500 text-white text-center"
+              >
+                {roles.map((role) => (
+                  <option key={role} value={role}>
+                    {role}
+                  </option>
+                ))}
+              </select>
+            </th>
+            <th className="py-4 px-2 sm:px-6 text-white text-center text-lg">
+              <select
+                value={selectedDepartment}
+                onChange={(e) =>
+                  setSelectedDepartment(
+                    e.target.value === "All Departments"
+                      ? "All"
+                      : e.target.value
+                  )
+                }
+                className="p-2 sm:p-2 pr-0 border-none rounded bg-sky-500 text-white text-center"
+              >
+                {departments.map((department) => (
+                  <option key={department} value={department}>
+                    {department}
+                  </option>
+                ))}
+              </select>
+            </th>
+            <th className="py-4 px-2 sm:px-6 text-white text-center text-lg">
+              Date
+            </th>
+            <th className="py-4 px-2 sm:px-6 text-white text-center text-lg">
+              <select
+                value={selectedStatus}
+                onChange={(e) =>
+                  setSelectedStatus(
+                    e.target.value === "All Statuses" ? "All" : e.target.value
+                  )
+                }
+                className="p-2 sm:p-2 pr-0 border-none rounded bg-sky-500 text-white text-center"
+              >
+                {statuses.map((status) => (
+                  <option key={status} value={status}>
+                    {status}
+                  </option>
+                ))}
+              </select>
+            </th>
+            <th className="py-4 px-2 sm:px-6 text-white text-center text-lg">
+              Check In
+            </th>
+            <th className="py-4 px-2 sm:px-6 text-white text-center text-lg">
+              Check Out
+            </th>
+            <th className="py-4 px-2 sm:px-6 text-white text-center rounded-tr-lg text-lg">
+              Work Hours
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {currentRecords.map((record) => {
+            const status = updateStatusForLateArrival(
+              record.Checkin,
+              record.Status
+            );
+            let statusClasses =
+              "bg-green-200 text-green-500 py-1 px-3 rounded text-lg";
+            if (status === "Absent") {
+              statusClasses =
+                "bg-red-200 text-red-500 py-1 px-3 rounded text-lg";
+            } else if (status === "Late arrival") {
+              statusClasses =
+                "bg-yellow-200 text-yellow-500 py-1 px-3 rounded text-lg";
+            }
+            return (
+              <tr key={record.id}>
+                <td className="py-2 px-2 sm:px-4 border-b border-gray-300 text-center">
+                  {record.id}
+                </td>
+                <td className="py-2 px-2 sm:px-6 border-b border-gray-300 text-center">
+                  {record.name}
+                </td>
+                <td className="py-2 px-2 sm:px-4 border-b border-gray-300 text-center">
+                  {record.role}
+                </td>
+                <td className="py-2 px-2 sm:px-6 border-b border-gray-300 text-center">
+                  {record.department}
+                </td>
+                <td
+                  className={`py-2 px-2 sm:px-6 border-b border-gray-300 text-center`}
+                >
+                  <button className={statusClasses}>{status}</button>
+                </td>
+                <td className="py-2 px-2 sm:px-6 border-b border-gray-300 text-center">
+                  {status === "Absent" ? "--" : record.punchin}
+                </td>
+                <td className="py-2 px-2 sm:px-6 border-b border-gray-300 text-center">
+                  {status === "Absent" ? "--" : record.punchout}
+                </td>
+                <td className="py-2 px-2 sm:px-6 border-b border-gray-300 text-center">
+                  {status === "Absent" ? "--" : record.duration}
+                </td>
+                <td className="py-2 px-2 sm:px-6 border-b border-gray-300 text-center">
+                  <button
+                    onClick={() => handleEditClick(record)}
+                    className="bg-blue-500 text-white px-4 py-2 rounded"
+                  >
+                    Edit
+                  </button>
+                </td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
       <div className="flex justify-between items-center mt-4">
         <button onClick={handlePreviousPage} className="p-2">
           <FcPrevious size={24} />
         </button>
-        <span className="text-gray-700">
+        <span className="text-gray-700 text-lg">
           Page {currentPage} of {totalPages}
         </span>
         <button onClick={handleNextPage} className="p-2">

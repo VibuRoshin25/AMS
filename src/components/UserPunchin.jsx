@@ -86,7 +86,7 @@ const UserPunchin = ({ sid }) => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center w-1/3 h-auto bg-gradient-to-r p-6 mt-4 rounded-lg shadow-lg">
+    <div className="flex flex-wrap flex-col items-center justify-center h-[317px] bg-white w-1/4 p-6 mt-11 rounded-2xl shadow-lg">
       <div className="flex justify-between w-full mb-6">
         <div className="text-center">
           <p className="font-bold text-lg text-sky-500">Punch In</p>

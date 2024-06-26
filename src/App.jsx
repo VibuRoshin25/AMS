@@ -6,6 +6,9 @@ import Protected from "./pages/Protected";
 import LoginPage from "./pages/LoginPage";
 import AdminPage from "./pages/AdminPage";
 import UserPage from "./pages/UserPage";
+import UserTable from "./components/UserTable";
+
+import NotFoundPage from "./pages/NotFoundPage";
 
 function App() {
   const router = createBrowserRouter([
@@ -29,10 +32,10 @@ function App() {
         </Protected>
       ),
     },
-    // {
-    //   path: "*",
-    //   element: <NotFoundPage />,
-    // },
+    {
+      path: "*",
+      element: <NotFoundPage />,
+    },
   ]);
 
   return (
