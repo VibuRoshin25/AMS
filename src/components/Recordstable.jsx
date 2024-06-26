@@ -3,27 +3,6 @@ import { FcNext, FcPrevious } from "react-icons/fc";
 import { db } from "./firebase/firebase";
 import { collection, getDocs, doc, updateDoc } from "firebase/firestore";
 import EditModal from "./EditModal";
-
-const roles = [
-  "All Roles",
-  "Junior software developer",
-  "Senior software developer",
-  "Manager",
-  "MIS",
-  "Intern",
-  "Trainee",
-];
-const departments = ["All Departments", "IT", "HR", "Accounts", "MIS"];
-const statuses = [
-  "All Statuses",
-  "Work from home",
-  "Work from office",
-  "Absent",
-  "Present",
-];
-import { db } from "./firebase/firebase";
-import { collection, getDocs } from "firebase/firestore";
-import EditModal from "./EditModal";
 import { getDate } from "../utils/dateMethods";
 
 export default function Recordstable({ selectedDate }) {
