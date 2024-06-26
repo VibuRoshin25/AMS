@@ -6,9 +6,11 @@ import Protected from "./pages/Protected";
 import LoginPage from "./pages/LoginPage";
 import AdminPage from "./pages/AdminPage";
 import UserPage from "./pages/UserPage";
-import UserTable from "./components/UserTable";
-
+import LeavesPage from "./pages/LeavesPage";
+import HolidaysPage from "./pages/HolidaysPage";
+import ShiftsPage from "./pages/ShiftsPage";
 import NotFoundPage from "./pages/NotFoundPage";
+import UserTable from "./components/UserTable";
 
 function App() {
   const router = createBrowserRouter([
@@ -25,10 +27,34 @@ function App() {
       ),
     },
     {
-      path: "User",
+      path: "/user",
       element: (
         <Protected>
           <UserPage />
+        </Protected>
+      ),
+    },
+    {
+      path: "/leave-policies",
+      element: (
+        <Protected>
+          <LeavesPage />
+        </Protected>
+      ),
+    },
+    {
+      path: "/holidays",
+      element: (
+        <Protected>
+          <HolidaysPage />
+        </Protected>
+      ),
+    },
+    {
+      path: "/shifts",
+      element: (
+        <Protected>
+          <ShiftsPage />
         </Protected>
       ),
     },

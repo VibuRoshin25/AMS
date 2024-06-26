@@ -1,12 +1,6 @@
 const SearchBar = () => {
   return (
     <form className="w-1/4">
-      {/* <label
-        htmlFor="user-search"
-        className="mb-2 text-sm font-normal text-sky-900 sr-only"
-      >
-        Search
-      </label> */}
       <div className="relative">
         <input
           type="search"

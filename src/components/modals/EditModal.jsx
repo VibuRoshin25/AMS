@@ -14,14 +14,6 @@ const EditModal = ({ item, onSave, onClose }) => {
     Checkout: item.Checkout || "",
   });
 
-  // const handleChange = (e) => {
-  //   const { name, value } = e.target;
-  //   setFormData({
-  //     ...formData,
-  //     [name]: value,
-  //   });
-  // };
-
   const handleTimeChange = (name, newValue) => {
     setFormData({
       ...formData,

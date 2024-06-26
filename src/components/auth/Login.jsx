@@ -43,7 +43,6 @@ const Login = () => {
           progress: undefined,
           theme: "colored",
         });
-        // console.log(errorCode, errorMessage);
       });
   };
 
