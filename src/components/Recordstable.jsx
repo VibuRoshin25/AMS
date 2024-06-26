@@ -81,6 +81,24 @@ export default function Recordstable() {
     setCurrentPage((prevPage) => Math.min(prevPage + 1, totalPages));
   };
 
+  const handleEditClick = (record) => {
+    setEditRecord(record);
+    setIsModalOpen(true);
+  };
+
+  const handleSaveEdit = (updatedRecord) => {
+    setRecords((prevRecords) =>
+      prevRecords.map((record) =>
+        record.id === updatedRecord.id ? updatedRecord : record
+      )
+    );
+    setIsModalOpen(false);
+  };
+
+  const closeEditModal = () => {
+    setIsModalOpen(false);
+  };
+
   const startIndex = (currentPage - 1) * recordsPerPage;
   const currentRecords = filteredRecords.slice(
     startIndex,
@@ -164,8 +182,11 @@ export default function Recordstable() {
                 <th className="py-3 px-2 sm:px-6 text-white text-center">
                   Check Out
                 </th>
-                <th className="py-3 px-2 sm:px-6 text-white text-center rounded-tr-lg">
+                <th className="py-3 px-2 sm:px-6 text-white text-center">
                   Work Hours
+                </th>
+                <th className="py-3 px-2 sm:px-6 text-white text-center rounded-tr-lg">
+                  Edit
                 </th>
               </tr>
             </thead>
@@ -214,6 +235,14 @@ export default function Recordstable() {
                     </td>
                     <td className="py-2 px-2 sm:px-6 border-b border-gray-300 text-center">
                       {status === "Absent" ? "--" : record.duration}
+                    </td>
+                    <td className="py-2 px-2 sm:px-6 border-b border-gray-300 text-center">
+                      <button
+                        onClick={() => handleEditClick(record)}
+                        className="bg-blue-500 text-white px-4 py-2 rounded"
+                      >
+                        Edit
+                      </button>
                     </td>
                   </tr>
                 );
