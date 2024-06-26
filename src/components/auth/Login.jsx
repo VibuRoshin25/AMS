@@ -16,7 +16,7 @@ const Login = () => {
       .then((userCredential) => {
         // Signed in
         const user = userCredential.user;
-        toast.success(' Login successfully!', {
+        toast.success(" Login successfully!", {
           position: "top-center",
           autoClose: 1000,
           hideProgressBar: false,
@@ -52,7 +52,7 @@ const Login = () => {
       onSubmit={onLogin}
       className="m-8 h-2/3 lg:w-1/3 w-[80%] flex justify-center items-center flex-col gap-4 p-4 rounded-lg shadow-lg bg-white shadow-gray-400 z-10 space-y-5 "
     >
-      <img src={flipopayLogo} alt="flipopay-logo-image" className="h-8 "/>
+      <img src={flipopayLogo} alt="flipopay-logo-image" className="h-8 " />
       <div className="flex flex-col justify-center gap-3">
         <h2 className="text-2xl text-center text-sky-500">Login</h2>
         <label className="text-lg text-sky-500">Email</label>
