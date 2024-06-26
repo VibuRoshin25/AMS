@@ -47,16 +47,6 @@ export default function Recordstable() {
     fetchRecords();
   }, []);
 
-  const calculateTotalHours = (checkin, checkout) => {
-    const checkinTime = new Date(`01/01/2000 ${checkin}`);
-    const checkoutTime = new Date(`01/01/2000 ${checkout}`);
-    const diffInMs = checkoutTime - checkinTime;
-    const diffInMinutes = diffInMs / (1000 * 60);
-    const hours = Math.floor(diffInMinutes / 60);
-    const minutes = Math.floor(diffInMinutes % 60);
-    return `${hours} hrs ${minutes} mins`;
-  };
-
   const updateStatusForLateArrival = (checkin, status) => {
     return checkin > "09:00 AM" ? "Late arrival" : status;
   };
@@ -64,7 +54,8 @@ export default function Recordstable() {
   const filteredRecords = records.filter((record) => {
     return (
       (selectedRole === "All" || record.role === selectedRole) &&
-      (selectedDepartment === "All" || record.department === selectedDepartment) &&
+      (selectedDepartment === "All" ||
+        record.department === selectedDepartment) &&
       (selectedStatus === "All" || record.status === selectedStatus)
     );
   });
@@ -106,8 +97,8 @@ export default function Recordstable() {
                         e.target.value === "All Roles" ? "All" : e.target.value
                       )
                     }
-                    className="p-1 sm:p-2 pr-0 border-none rounded bg-sky-500 text-white text-center"   >
-               
+                    className="p-1 sm:p-2 pr-0 border-none rounded bg-sky-500 text-white text-center"
+                  >
                     {roles.map((role) => (
                       <option key={role} value={role}>
                         {role}
