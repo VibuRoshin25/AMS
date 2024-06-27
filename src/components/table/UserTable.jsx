@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { FcNext, FcPrevious } from "react-icons/fc";
-import { db } from "./firebase/firebase";
+import { db } from "../firebase/firebase";
 import { collection, getDocs } from "firebase/firestore";
 
 export default function UserTable() {

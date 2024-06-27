@@ -1,14 +1,13 @@
-import Header from "../components/Header";
 import StyledDatePicker from "../components/StyledDatePicker";
 import SearchBar from "../components/SearchBar";
 import UserPunchin from "../components/UserPunchin";
 import Userprofile from "../components/Userprofile";
-import UserTable from "../components/UserTable";
+import UserTable from "../components/table/UserTable";
+import PageOutline from "../components/PageOutline";
 
 export default function UserPage() {
   return (
-    <div className="min-h-screen bg-gray-100 p-6 flex flex-col ">
-      <Header />
+    <PageOutline>
       <div className="flex justify-center mb-10 mt-6">
         <div className="flex flex-row gap-10">
           <UserPunchin />
@@ -22,6 +21,6 @@ export default function UserPage() {
         <SearchBar className="flex-1 min-w-[220px] max-w-[300px]" />
       </div>
       <UserTable />
-    </div>
+    </PageOutline>
   );
 }
