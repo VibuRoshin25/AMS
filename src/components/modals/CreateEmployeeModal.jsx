@@ -146,51 +146,42 @@ const CreateEmployeeModal = () => {
       <Button onClick={openModal}>Create Employee</Button>
       <CustomModal isOpen={isModalOpen} onClose={closeModal}>
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Name
-            </label>
-            <input
-              className="pl-3 mt-1 block w-full border border-sky-100 rounded-md shadow-sm focus:ring-sky-500 focus:border-sky-500 focus:outline-sky-500 sm:text-sm"
-              type="text"
-              required
-              onChange={(e) => setName(e.target.value)}
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Department
-            </label>
-            <select
-              className="mt-1 block w-full border border-sky-100 rounded-md shadow-sm focus:ring-sky-500 focus:border-sky-500 focus:outline-sky-500 sm:text-sm"
-              required
-              onChange={(e) => setDept(e.target.value)}
-            >
-              <option value="">Select Department</option>
-              {departments.map((department, index) => (
-                <option key={index} value={department}>
-                  {department}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Role
-            </label>
-            <select
-              className="mt-1 block w-full border border-sky-100 rounded-md shadow-sm focus:ring-sky-500 focus:border-sky-500 focus:outline-sky-500 sm:text-sm"
-              required
-              onChange={(e) => setRole(e.target.value)}
-            >
-              <option value="">Select Role</option>
-              {roles.map((role, index) => (
-                <option key={index} value={role}>
-                  {role}
-                </option>
-              ))}
-            </select>
-          </div>
+          <LabeledInput
+            label="Name"
+            value={name}
+            onChange={setName}
+            placeholder="Enter name"
+          />
+          <LabeledInput
+            label="Department"
+            value={dept}
+            onChange={setDept}
+            options={departments}
+          />
+          <LabeledInput
+            label="Role"
+            value={role}
+            onChange={setRole}
+            options={roles}
+          />
+          <LabeledInput
+            label="Email"
+            value={email}
+            onChange={setEmail}
+            placeholder="Enter email"
+          />
+          <LabeledInput
+            label="Password"
+            value={password}
+            onChange={setPassword}
+            placeholder="Enter password"
+          />
+          <LabeledInput
+            label="Confirm Password"
+            value={confirmPassword}
+            onChange={setConfirmPassword}
+            placeholder="Confirm password"
+          />
           <Button type="submit">Create Employee</Button>
         </form>
       </CustomModal>
