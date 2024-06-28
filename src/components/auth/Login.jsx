@@ -3,47 +3,75 @@ import Button from "../Button.jsx";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../firebase/firebase.js";
+import { auth, db } from "../firebase/firebase.js";
 import { toast } from "react-toastify";
+import { collection, query, where, getDocs } from "firebase/firestore";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
-  const onLogin = (e) => {
+
+  const onLogin = async (e) => {
     e.preventDefault();
-    signInWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        // Signed in
-        const user = userCredential.user;
-        toast.success(" Login successfully!", {
-          position: "top-center",
-          autoClose: 1000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "colored",
-        });
-        // console.log(user);
-        navigate("/");
-        // ...
-      })
-      .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        toast.error("Invalid Credentials.", {
-          position: "top-center",
-          autoClose: 1000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "colored",
-        });
+    try {
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+      const user = userCredential.user;
+      console.log(userCredential);
+      toast.success(" Login successfully!", {
+        position: "top-center",
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
       });
+      console.log(user);
+      const q = query(collection(db, "employees"), where("email", "==", email));
+      const querySnapshot = await getDocs(q);
+      console.log(querySnapshot);
+      if (!querySnapshot.empty) {
+        querySnapshot.forEach((doc) => {
+          console.log(doc.id, " => ", doc.data());
+          const userType = doc.data().type;
+          console.log("User type:", userType);
+
+          navigate("/");
+        });
+      } else {
+        console.error("No such document!");
+        toast.error("User document not found.", {
+          position: "top-center",
+          autoClose: 1000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        });
+      }
+    } catch (error) {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      console.log(errorCode, errorMessage);
+      toast.error("Invalid Credentials.", {
+        position: "top-center",
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+      });
+    }
   };
 
   return (
