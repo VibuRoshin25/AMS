@@ -195,7 +195,7 @@ export default function Recordstable({ selectedDate }) {
                 <StyledTD>{record.role}</StyledTD>
                 <StyledTD>{record.department}</StyledTD>
                 <StyledTD>
-                  <button className={statusClasses}>{status}</button>
+                  <button className={statusClasses}>{record.status}</button>
                 </StyledTD>
                 <StyledTD>
                   {status === "Absent" ? "--" : record.punchin}

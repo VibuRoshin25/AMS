@@ -7,6 +7,7 @@ import { toast } from "react-toastify";
 import { signUp } from "../../services/authService";
 import LabeledInput from "../LabeledInput";
 import { departments, roles } from "../../utils/constants";
+import { validateEmail, validatePassword } from "../../utils/validationMethods";
 
 const CreateEmployeeModal = () => {
   const [name, setName] = useState("");
@@ -31,16 +32,6 @@ const CreateEmployeeModal = () => {
     } catch (error) {
       console.error("Error retrieving documents: ", error);
     }
-  };
-
-  const validateEmail = (email) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
-  };
-
-  const validatePassword = (password) => {
-    const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,12}$/;
-    return passwordRegex.test(password);
   };
 
   const handleSubmit = async (e) => {

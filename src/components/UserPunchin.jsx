@@ -4,12 +4,14 @@ import { db } from "./firebase/firebase";
 import { getDoc, setDoc, collection, doc } from "firebase/firestore";
 // import { isWithinRadius } from "../utils/locationMethods";
 import dayjs from "dayjs";
+import { calculateStatus } from "../utils/statusMethods";
 
 const UserPunchin = ({ sid }) => {
   const [isPunchedIn, setIsPunchedIn] = useState(false);
   const [punchInTime, setPunchInTime] = useState(null);
   const [punchOutTime, setPunchOutTime] = useState(null);
   const [totalDuration, setTotalDuration] = useState(null);
+  const [status, setStatus] = useState(null);
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
 
   useEffect(() => {
@@ -31,6 +33,7 @@ const UserPunchin = ({ sid }) => {
               setPunchInTime(dayjs(record.punchin, "hh:mm A").toDate());
               setPunchOutTime(dayjs(record.punchout, "hh:mm A").toDate());
               setTotalDuration(record.duration);
+              setStatus(record.status);
               setIsButtonDisabled(true);
             }
           }
@@ -50,7 +53,6 @@ const UserPunchin = ({ sid }) => {
       const formattedTime = getTime(currentTime);
       const collectionRef = collection(db, "attendance");
       const docRef = doc(collectionRef, sid);
-      // const validLocation = await isWithinRadius();
 
       if (!isPunchedIn) {
         setPunchInTime(currentTime);
@@ -60,7 +62,6 @@ const UserPunchin = ({ sid }) => {
         const data = {
           [formattedDate]: {
             punchin: formattedTime,
-            // onSite: validLocation ? true : false,
           },
         };
 
@@ -68,7 +69,10 @@ const UserPunchin = ({ sid }) => {
       } else {
         setPunchOutTime(currentTime);
         const duration = calculateDuration(punchInTime, currentTime);
+        const durationInHours = duration / 60;
+        const currentStatus = calculateStatus(durationInHours);
         setTotalDuration(duration);
+        setStatus(currentStatus);
         setIsPunchedIn(false);
         setIsButtonDisabled(true);
 
@@ -76,6 +80,7 @@ const UserPunchin = ({ sid }) => {
           [formattedDate]: {
             punchout: formattedTime,
             duration: duration,
+            status: currentStatus,
           },
         };
         await setDoc(docRef, updateData, { merge: true });
@@ -112,6 +117,12 @@ const UserPunchin = ({ sid }) => {
         <div className="mt-6 text-center">
           <p className="text-sky-500 font-bold text-lg">Total Duration</p>
           <a className="block text-black text-sm">{totalDuration}</a>
+        </div>
+      )}
+      {status && (
+        <div className="mt-4 text-center">
+          <p className="text-sky-500 font-bold text-lg">Status</p>
+          <a className="block text-black text-sm">{status}</a>
         </div>
       )}
     </div>
