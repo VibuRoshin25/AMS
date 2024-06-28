@@ -5,7 +5,7 @@ import { getDoc, setDoc, collection, doc } from "firebase/firestore";
 // import { isWithinRadius } from "../utils/locationMethods";
 import dayjs from "dayjs";
 
-const UserPunchin = ({ sid }) => {
+const UserPunchin = ({ userId }) => {
   const [isPunchedIn, setIsPunchedIn] = useState(false);
   const [punchInTime, setPunchInTime] = useState(null);
   const [punchOutTime, setPunchOutTime] = useState(null);
@@ -17,7 +17,7 @@ const UserPunchin = ({ sid }) => {
       try {
         const currentTime = new Date();
         const formattedDate = getDate(currentTime);
-        const docRef = doc(db, "attendance", sid);
+        const docRef = doc(db, "attendance", userId);
         const docSnap = await getDoc(docRef);
 
         if (docSnap.exists()) {
@@ -41,7 +41,7 @@ const UserPunchin = ({ sid }) => {
     };
 
     fetchAttendanceRecord();
-  }, [sid]);
+  }, [userId]);
 
   const handlePunch = async () => {
     try {
@@ -49,7 +49,7 @@ const UserPunchin = ({ sid }) => {
       const formattedDate = getDate(currentTime);
       const formattedTime = getTime(currentTime);
       const collectionRef = collection(db, "attendance");
-      const docRef = doc(collectionRef, sid);
+      const docRef = doc(collectionRef, userId);
       // const validLocation = await isWithinRadius();
 
       if (!isPunchedIn) {

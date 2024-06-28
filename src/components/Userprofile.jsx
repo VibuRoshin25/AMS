@@ -1,28 +1,34 @@
 import { useState, useEffect } from "react";
 import { Pie } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
-
+import { getDoc, doc } from "firebase/firestore";
+import { db } from "./firebase/firebase";
+import useFetchCollection from "../hooks/UseFetchCollection";
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-export default function UserProfile() {
+export default function UserProfile({ userId }) {
+  const [records, setRecords] = useState([]);
   const [totalDays, setTotalDays] = useState(0);
   const [presentDays, setPresentDays] = useState(0);
   const [absentDays, setAbsentDays] = useState(0);
   const [availableLeave, setAvailableLeave] = useState(0);
 
-  const records = [
-    { id: 1, Employee: "Sabari", Date: "01/03/2024", Status: "Present" },
-    { id: 2, Employee: "Vino Kishore", Date: "02/03/2024", Status: "Present" },
-    { id: 3, Employee: "Aishwarya", Date: "03/03/2024", Status: "Absent" },
-    { id: 4, Employee: "Ganga", Date: "04/03/2024", Status: "Present" },
-    { id: 5, Employee: "Yamuna", Date: "05/03/2024", Status: "Leave" },
-  ];
-
-  const calculateTotalDays = (month, year) => {
-    return new Date(year, month, 0).getDate();
-  };
-
   useEffect(() => {
+    const fetchAttendanceRecord = async () => {
+      try {
+        const docRef = doc(db, "attendance", userId);
+        console.log(userId);
+        const docSnap = await getDoc(docRef);
+        console.log(docSnap);
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          console.log(data);
+        }
+      } catch (error) {
+        console.error("Error fetching attendance record: ", error);
+      }
+    };
+    fetchAttendanceRecord();
     const currentDate = new Date();
     const currentMonth = currentDate.getMonth() + 1;
     const currentYear = currentDate.getFullYear();
@@ -41,7 +47,11 @@ export default function UserProfile() {
     setAbsentDays(absentCount);
 
     setAvailableLeave(20);
-  }, [records]);
+  }, [userId, records]);
+
+  const calculateTotalDays = (month, year) => {
+    return new Date(year, month, 0).getDate();
+  };
 
   const pieData = {
     labels: ["Present Days", "Absent Days", "Total Days"],
