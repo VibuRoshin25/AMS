@@ -10,7 +10,7 @@ import FieldSelector from "../FieldSelector";
 import Table from "./Table";
 import { getDate } from "../../utils/dateMethods";
 
-export default function Recordstable({ selectedDate }) {
+export default function Recordstable({ selectedDate, selectedName }) {
   const [records, setRecords] = useState([]);
   const [selectedRole, setSelectedRole] = useState("All");
   const [selectedDepartment, setSelectedDepartment] = useState("All");
@@ -72,7 +72,9 @@ export default function Recordstable({ selectedDate }) {
       (selectedRole === "All" || record.role === selectedRole) &&
       (selectedDepartment === "All" ||
         record.department === selectedDepartment) &&
-      (selectedStatus === "All" || record.status === selectedStatus)
+      (selectedStatus === "All" || record.status === selectedStatus) &&
+      (selectedName === "" ||
+        record.name.toLowerCase().includes(selectedName.toLowerCase()))
     );
   });
 
