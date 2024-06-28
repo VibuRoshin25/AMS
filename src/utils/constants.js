@@ -21,10 +21,4 @@ export const departments = [
   "Engineering",
 ];
 
-export const statuses = [
-  "All Statuses",
-  "Work from home",
-  "Work from office",
-  "Absent",
-  "Late arrival",
-];
+export const statuses = ["All Statuses", "Absent", "Half Day", "Full Day"];

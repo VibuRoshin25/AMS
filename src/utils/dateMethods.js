@@ -10,7 +10,7 @@ export const getTime = (date) => {
 };
 
 export const calculateDuration = (start, end) => {
-  const difference = end - start; // difference in milliseconds
+  const difference = end - start;
   const hours = Math.floor(difference / (1000 * 60 * 60));
   const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
   return `${hours} hours ${minutes} min`;
