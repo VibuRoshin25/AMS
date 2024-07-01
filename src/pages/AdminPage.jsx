@@ -11,6 +11,11 @@ export default function AdminPage() {
     startDate: currentDate,
     endDate: currentDate,
   });
+  const [selectedName, setSelectedName] = useState("");
+
+  const handleSelectName = (event) => {
+    setSelectedName(event.target.value);
+  };
 
   return (
     <PageOutline>
@@ -18,11 +23,14 @@ export default function AdminPage() {
         <StyledDatePicker
           selectedDate={selectedDate}
           onSelectDate={setSelectedDate}
-        />{" "}
-        <SearchBar />
+        />
+        <SearchBar
+          selectedName={selectedName}
+          onSelectName={handleSelectName}
+        />
         <CreateEmployeeModal />
       </div>
-      <Recordstable selectedDate={selectedDate} />
+      <Recordstable selectedDate={selectedDate} selectedName={selectedName} />
     </PageOutline>
   );
 }
