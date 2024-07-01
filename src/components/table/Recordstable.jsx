@@ -10,7 +10,7 @@ import FieldSelector from "../FieldSelector";
 import Table from "./Table";
 import { getDate } from "../../utils/dateMethods";
 
-export default function Recordstable({ selectedDate }) {
+export default function Recordstable({ ...selectedDate }) {
   const [records, setRecords] = useState([]);
   const [selectedRole, setSelectedRole] = useState("All");
   const [selectedDepartment, setSelectedDepartment] = useState("All");
@@ -167,8 +167,8 @@ export default function Recordstable({ selectedDate }) {
                 ))}
               </FieldSelector>
             </StyledTH>
-            <StyledTH>Check In</StyledTH>
-            <StyledTH>Check Out</StyledTH>
+            <StyledTH>Punch In</StyledTH>
+            <StyledTH>Punch Out</StyledTH>
             <StyledTH>Work Hours</StyledTH>
             <StyledTH className="rounded-tr-lg">Edit</StyledTH>
           </tr>
@@ -195,7 +195,7 @@ export default function Recordstable({ selectedDate }) {
                 <StyledTD>{record.role}</StyledTD>
                 <StyledTD>{record.department}</StyledTD>
                 <StyledTD>
-                  <button className={statusClasses}>{record.status}</button>
+                  <button className={statusClasses}>{status}</button>
                 </StyledTD>
                 <StyledTD>
                   {status === "Absent" ? "--" : record.punchin}

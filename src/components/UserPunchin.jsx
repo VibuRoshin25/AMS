@@ -93,40 +93,42 @@ const UserPunchin = ({ userId }) => {
   };
 
   return (
-    <div className="flex flex-wrap flex-col items-center justify-center h-[317px] bg-white w-1/4 p-6 mt-11 rounded-2xl shadow-lg">
-      <div className="flex justify-between w-full mb-6">
-        <div className="text-center">
-          <p className="font-bold text-lg text-sky-500">Punch In</p>
-          <a className="block text-black text-sm">
-            {punchInTime ? getTime(punchInTime) : "--:--"}
-          </a>
+    <div className="flex flex-wrap  items-center justify-center bg-white w-full h-full p-6 rounded-2xl shadow-lg">
+      <div className="flex flex-col justify-between w-full h-full mb-6">
+        <div className="flex flex-row">
+          <div className="text-center h-12">
+            <p className="font-bold text-lg text-sky-500">Punch In</p>
+            <a className="block text-black text-sm">
+              {punchInTime ? getTime(punchInTime) : "--:--"}
+            </a>
+          </div>
+          <div className="text-center h-12">
+            <p className="font-bold text-lg text-sky-500">Punch Out</p>
+            <a className="block text-black text-sm">
+              {punchOutTime ? getTime(punchOutTime) : "--:--"}
+            </a>
+          </div>
         </div>
-        <div className="text-center">
-          <p className="font-bold text-lg text-sky-500">Punch Out</p>
-          <a className="block text-black text-sm">
-            {punchOutTime ? getTime(punchOutTime) : "--:--"}
-          </a>
-        </div>
+        <button
+          className="bg-gray-900 text-white w-28 h-10 rounded-full hover:bg-gray-700 transition duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:bg-gray-400"
+          onClick={handlePunch}
+          disabled={isButtonDisabled}
+        >
+          {isPunchedIn ? "Punch Out" : "Punch In"}
+        </button>
+        {totalDuration && (
+          <div className="mt-6 text-center">
+            <p className="text-sky-500 font-bold text-lg">Total Duration</p>
+            <a className="block text-black text-sm">{totalDuration}</a>
+          </div>
+        )}
+        {status && (
+          <div className="mt-4 text-center">
+            <p className="text-sky-500 font-bold text-lg">Status</p>
+            <a className="block text-black text-sm">{status}</a>
+          </div>
+        )}
       </div>
-      <button
-        className="bg-gray-900 text-white w-28 h-10 rounded-full hover:bg-gray-700 transition duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:bg-gray-400"
-        onClick={handlePunch}
-        disabled={isButtonDisabled}
-      >
-        {isPunchedIn ? "Punch Out" : "Punch In"}
-      </button>
-      {totalDuration && (
-        <div className="mt-6 text-center">
-          <p className="text-sky-500 font-bold text-lg">Total Duration</p>
-          <a className="block text-black text-sm">{totalDuration}</a>
-        </div>
-      )}
-      {status && (
-        <div className="mt-4 text-center">
-          <p className="text-sky-500 font-bold text-lg">Status</p>
-          <a className="block text-black text-sm">{status}</a>
-        </div>
-      )}
     </div>
   );
 };

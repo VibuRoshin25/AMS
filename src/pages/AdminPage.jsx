@@ -16,9 +16,10 @@ export default function AdminPage() {
     <PageOutline>
       <div className="flex justify-center gap-20 mt-8">
         <StyledDatePicker
+          asSingle={true}
           selectedDate={selectedDate}
           onSelectDate={setSelectedDate}
-        />{" "}
+        />
         <SearchBar />
         <CreateEmployeeModal />
       </div>
