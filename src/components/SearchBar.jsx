@@ -1,10 +1,12 @@
-const SearchBar = () => {
+const SearchBar = ({ selectedName, onSelectName }) => {
   return (
     <form className="w-1/4">
       <div className="relative">
         <input
           type="search"
           id="user-search"
+          value={selectedName}
+          onChange={onSelectName}
           className="block h-9 w-full p-5 pl-10 font-normal text-sm border-2 border-sky-500 rounded-lg  focus:ring-sky-500 focus:border-sky-500 focus:outline-sky-500 focus:outline-offset-0 text-center focus:shadow-xl search-cancel:appearance-none"
           placeholder="Search Users"
           required
