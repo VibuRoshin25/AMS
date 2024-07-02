@@ -15,6 +15,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: npm install
+      - name: Set up environment variables
+        run: |
+          echo "VITE_FIREBASE_BROWSER_API=${{ env.VITE_FIREBASE_BROWSER_API }}" >> $GITHUB_ENV
+          echo "VITE_FIREBASE_AUTH_DOMAIN=${{ env.VITE_FIREBASE_AUTH_DOMAIN }}" >> $GITHUB_ENV
+          echo "VITE_FIREBASE_STORAGE_BUCKET=${{ env.VITE_FIREBASE_STORAGE_BUCKET }}" >> $GITHUB_ENV
+          echo "VITE_FIREBASE_SENDER_ID=${{ env.VITE_FIREBASE_SENDER_ID }}" >> $GITHUB_ENV
+          echo "VITE_FIREBASE_APP_ID=${{ env.VITE_FIREBASE_APP_ID }}" >> $GITHUB_ENV
+          echo "VITE_FIREBASE_MEASUREMENT_ID=${{ env.VITE_FIREBASE_MEASUREMENT_ID }}" >> $GITHUB_ENV
+      - name: Verify environment variables
+        run: printenv | grep VITE_
       - run: npm run build
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
