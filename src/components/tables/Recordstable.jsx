@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { FcNext, FcPrevious } from "react-icons/fc";
-import { db } from "../firebase/firebase";
+import { db } from "../../firebase/firebaseConfig";
 import { collection, getDocs } from "firebase/firestore";
 import { roles, departments, statuses } from "../../utils/constants";
 import EditModal from "../modals/EditModal";

@@ -2,9 +2,9 @@ import { useState, useEffect } from "react";
 import { Pie } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { getDoc, doc } from "firebase/firestore";
-import { db } from "./firebase/firebase";
+import { db } from "../firebase/firebaseConfig";
 import ProfileCard from "./ProfileCard";
-import defaultpfp from "../assets/default-pfp.svg";
+import ProfilePhoto from "./ProfilePhoto";
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 export default function UserProfile({ userId }) {
@@ -104,11 +104,7 @@ export default function UserProfile({ userId }) {
         <div className="flex flex-col lg:w-3/3">
           <div className="flex justify-between">
             <div className="flex  items-center w-full justify-between">
-              <img
-                src={defaultpfp}
-                alt="Profile"
-                className="w-24 h-24 rounded-full border-4 border-sky-500"
-              />
+              <ProfilePhoto />
               <div className="text-center lg:text-left">
                 <h2 className="text-3xl font-bold text-sky-500">
                   {userData.name}

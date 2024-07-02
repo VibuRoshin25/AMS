@@ -3,7 +3,7 @@ import Button from "../Button.jsx";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth, db } from "../firebase/firebase.js";
+import { auth, db } from "../../firebase/firebaseConfig.js";
 import { toast } from "react-toastify";
 import { collection, query, where, getDocs } from "firebase/firestore";
 

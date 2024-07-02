@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { FcNext, FcPrevious } from "react-icons/fc";
-import { db } from "../firebase/firebase";
+import { db } from "../../firebase/firebaseConfig";
 import { getDoc, doc } from "firebase/firestore";
 import Table from "./Table";
 import dayjs from "dayjs";

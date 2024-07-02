@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { collection, doc, setDoc, getDocs } from "firebase/firestore";
-import { db } from "../firebase/firebase";
+import { db } from "../../firebase/firebaseConfig";
 import Button from "../Button";
 import CustomModal from "./Modal";
 import { toast } from "react-toastify";
@@ -136,7 +136,7 @@ const CreateEmployeeModal = () => {
     <div>
       <Button onClick={openModal}>Create Employee</Button>
       <CustomModal isOpen={isModalOpen} onClose={closeModal}>
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4" autoComplete="off">
           <LabeledInput
             label="Name"
             value={name}

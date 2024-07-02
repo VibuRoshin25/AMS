@@ -1,7 +1,7 @@
 import useFetchCollection from "../hooks/UseFetchCollection.jsx";
 import StyledTH from "../components/StyledTH";
 import StyledTD from "../components/StyledTD.jsx";
-import Table from "../components/table/Table.jsx";
+import Table from "../components/tables/Table.jsx";
 import AddLeaveModal from "../components/modals/AddLeaveModal.jsx";
 import PageOutline from "../components/PageOutline.jsx";
 

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { getDate, getTime, calculateDuration } from "../utils/dateMethods";
-import { db } from "./firebase/firebase";
+import { db } from "../firebase/firebaseConfig";
 import { getDoc, setDoc, collection, doc } from "firebase/firestore";
 // import { isWithinRadius } from "../utils/locationMethods";
 import dayjs from "dayjs";

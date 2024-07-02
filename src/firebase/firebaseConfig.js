@@ -9,13 +9,13 @@ import { getFirestore } from "firebase/firestore";
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 export const firebaseConfig = {
-  apiKey: "AIzaSyDZfD-svlfoMXAtsAuKT4XIjndwi_WVcbA",
-  authDomain: "flipopay-ams.firebaseapp.com",
+  apiKey: import.meta.env.VITE_FIREBASE_BROWSER_API,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
   projectId: "flipopay-ams",
-  storageBucket: "flipopay-ams.appspot.com",
-  messagingSenderId: "955778958471",
-  appId: "1:955778958471:web:e3609a4dc35f6ef4786422",
-  measurementId: "G-TZR2786M9E",
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
+  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
 };
 
 // Initialize Firebase

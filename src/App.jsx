@@ -16,7 +16,8 @@ import LeavesPage from "./pages/LeavesPage";
 import HolidaysPage from "./pages/HolidaysPage";
 import ShiftsPage from "./pages/ShiftsPage";
 import NotFoundPage from "./pages/NotFoundPage";
-import { auth, db } from "./components/firebase/firebase";
+import LoadingPage from "./pages/LoadingPage";
+import { auth, db } from "./firebase/firebaseConfig";
 import { collection, query, where, getDocs } from "firebase/firestore";
 
 function App() {
@@ -60,7 +61,7 @@ function App() {
   }, []);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <LoadingPage />;
   }
 
   return (

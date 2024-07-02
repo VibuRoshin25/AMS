@@ -1,8 +1,8 @@
 import StyledDatePicker from "../components/StyledDatePicker";
 import SearchBar from "../components/SearchBar";
 import UserPunchin from "../components/UserPunchin";
-import Userprofile from "../components/Userprofile";
-import UserTable from "../components/table/UserTable";
+import Userprofile from "../components/UserProfile";
+import UserTable from "../components/tables/UserTable";
 import PageOutline from "../components/PageOutline";
 import { useState } from "react";
 

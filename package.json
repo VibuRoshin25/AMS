@@ -16,6 +16,7 @@
     "@mui/lab": "^5.0.0-alpha.170",
     "@mui/material": "^5.15.20",
     "@mui/x-date-pickers": "^7.7.0",
+    "@tailwindcss/aspect-ratio": "^0.4.2",
     "chart": "^0.1.2",
     "classnames": "^2.5.1",
     "dayjs": "^1.11.11",
@@ -29,7 +30,8 @@
     "react-modal": "^3.16.1",
     "react-tailwindcss-datepicker": "^1.6.6",
     "react-time-picker": "^7.0.0",
-    "react-toastify": "^10.0.5"
+    "react-toastify": "^10.0.5",
+    "redux": "^5.0.1"
   },
   "devDependencies": {
     "@types/react": "^18.2.66",
