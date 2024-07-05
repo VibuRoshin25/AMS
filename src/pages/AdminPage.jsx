@@ -1,6 +1,6 @@
 import StyledDatePicker from "../components/StyledDatePicker";
 import SearchBar from "../components/SearchBar";
-import RecordStable from "../components/tables/RecordStable";
+import RecordsTable from "../components/tables/RecordsTable";
 import CreateEmployeeModal from "../components/modals/CreateEmployeeModal";
 import PageOutline from "../components/PageOutline";
 import { useDispatch, useSelector } from "react-redux";
@@ -39,7 +39,7 @@ export default function AdminPage() {
           <CreateEmployeeModal />
         </div>
       </div>
-      <RecordStable selectedDate={selectedDate} selectedName={selectedName} />
+      <RecordsTable selectedDate={selectedDate} selectedName={selectedName} />
     </PageOutline>
   );
 }

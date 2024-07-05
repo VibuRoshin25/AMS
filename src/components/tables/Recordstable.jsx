@@ -18,7 +18,7 @@ import FieldSelector from "../FieldSelector";
 import Table from "./Table";
 import Loading from "../Loading";
 
-export default function RecordStable() {
+export default function RecordsTable() {
   const dispatch = useDispatch();
   const selectedDate = useSelector(selectSelectedDate);
   const selectedName = useSelector(selectSelectedName);
