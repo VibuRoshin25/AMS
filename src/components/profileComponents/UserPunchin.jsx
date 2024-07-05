@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
-import { getDate, getTime, calculateDuration } from "../utils/dateMethods";
-import { db } from "../firebase/firebaseConfig";
+import { getDate, getTime, calculateDuration } from "../../utils/dateMethods";
+import { db } from "../../firebase/firebaseConfig";
 import { getDoc, setDoc, collection, doc } from "firebase/firestore";
 // import { isWithinRadius } from "../utils/locationMethods";
 import dayjs from "dayjs";
-import { calculateStatus } from "../utils/statusMethods";
+import { calculateStatus } from "../../utils/statusMethods";
+import Punch from "../Punch";
 
 const UserPunchin = ({ userId }) => {
   const [isPunchedIn, setIsPunchedIn] = useState(false);
@@ -94,28 +95,11 @@ const UserPunchin = ({ userId }) => {
 
   return (
     <div className="flex flex-wrap  items-center justify-center bg-white w-full h-full p-6 rounded-2xl shadow-lg">
-      <div className="flex flex-col justify-between w-full h-full mb-6">
-        <div className="flex flex-row">
-          <div className="text-center h-12">
-            <p className="font-bold text-lg text-sky-500">Punch In</p>
-            <a className="block text-black text-sm">
-              {punchInTime ? getTime(punchInTime) : "--:--"}
-            </a>
-          </div>
-          <div className="text-center h-12">
-            <p className="font-bold text-lg text-sky-500">Punch Out</p>
-            <a className="block text-black text-sm">
-              {punchOutTime ? getTime(punchOutTime) : "--:--"}
-            </a>
-          </div>
+      <div className="flex flex-col items-center justify-between w-full h-full mb-6">
+        <div className="flex flex-row gap-20">
+          <Punch value={punchInTime} label="Punch In" />
+          <Punch value={punchOutTime} label="Punch Out" />
         </div>
-        <button
-          className="bg-gray-900 text-white w-28 h-10 rounded-full hover:bg-gray-700 transition duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:bg-gray-400"
-          onClick={handlePunch}
-          disabled={isButtonDisabled}
-        >
-          {isPunchedIn ? "Punch Out" : "Punch In"}
-        </button>
         {totalDuration && (
           <div className="mt-6 text-center">
             <p className="text-sky-500 font-bold text-lg">Total Duration</p>
@@ -128,6 +112,13 @@ const UserPunchin = ({ userId }) => {
             <a className="block text-black text-sm">{status}</a>
           </div>
         )}
+        <button
+          className="bg-gray-900 text-white w-28 h-10 rounded-full hover:bg-gray-700 transition duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:bg-gray-400"
+          onClick={handlePunch}
+          disabled={isButtonDisabled}
+        >
+          {isPunchedIn ? "Punch Out" : "Punch In"}
+        </button>
       </div>
     </div>
   );

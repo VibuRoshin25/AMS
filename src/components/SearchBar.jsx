@@ -1,7 +1,7 @@
 const SearchBar = ({ selectedName, onSelectName }) => {
   return (
-    <form className="w-1/4">
-      <div className="relative">
+    <form className="w-1/2">
+      <div className="relative ">
         <input
           type="search"
           id="user-search"

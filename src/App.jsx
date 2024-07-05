@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import {
   BrowserRouter as Router,
   Route,
@@ -16,53 +17,32 @@ import LeavesPage from "./pages/LeavesPage";
 import HolidaysPage from "./pages/HolidaysPage";
 import ShiftsPage from "./pages/ShiftsPage";
 import NotFoundPage from "./pages/NotFoundPage";
-import LoadingPage from "./pages/LoadingPage";
-import { auth, db } from "./firebase/firebaseConfig";
-import { collection, query, where, getDocs } from "firebase/firestore";
+import Loading from "./components/Loading";
+import { auth } from "./firebase/firebaseConfig";
+import {
+  fetchCurrentUser,
+  selectCurrentUser,
+  selectLoading,
+} from "./store/authSlice";
 
 function App() {
-  const [currentUser, setCurrentUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const dispatch = useDispatch();
+  const currentUser = useSelector(selectCurrentUser);
+  const loading = useSelector(selectLoading);
 
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged(async (user) => {
+    const unsubscribe = auth.onAuthStateChanged((user) => {
       if (user) {
-        setCurrentUser(user);
-        try {
-          const q = query(
-            collection(db, "employees"),
-            where("email", "==", user.email)
-          );
-          const querySnapshot = await getDocs(q);
-          if (!querySnapshot.empty) {
-            querySnapshot.forEach((doc) => {
-              setCurrentUser({
-                uid: user.uid,
-                email: user.email,
-                type: doc.data().type,
-                userId: doc.id,
-              });
-            });
-          } else {
-            console.log("No such document!");
-          }
-        } catch (error) {
-          console.error("Error fetching user data:", error);
-        } finally {
-          setLoading(false);
-        }
+        dispatch(fetchCurrentUser(user));
       } else {
-        setCurrentUser(null);
-        setLoading(false);
+        dispatch(fetchCurrentUser(null));
       }
     });
 
     return () => unsubscribe();
-  }, []);
+  }, [dispatch]);
 
-  if (loading) {
-    return <LoadingPage />;
-  }
+  if (loading) return <Loading />;
 
   return (
     <AuthContext>

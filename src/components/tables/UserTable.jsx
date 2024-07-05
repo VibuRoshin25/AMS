@@ -1,69 +1,51 @@
-import { useState, useEffect } from "react";
-import { FcNext, FcPrevious } from "react-icons/fc";
-import { db } from "../../firebase/firebaseConfig";
-import { getDoc, doc } from "firebase/firestore";
+import { useSelector } from "react-redux";
 import Table from "./Table";
 import dayjs from "dayjs";
+import isBetween from "dayjs/plugin/isBetween";
 import StyledTD from "../StyledTD";
 import StyledTH from "../StyledTH";
+import { FcNext, FcPrevious } from "react-icons/fc";
+import { useState } from "react";
 
-export default function UserTable({ userId, ...selectedDates }) {
-  const [records, setRecords] = useState([]);
+dayjs.extend(isBetween);
+
+export default function UserTable() {
+  const { attendanceRecords, selectedDates } = useSelector(
+    (state) => state.userFilters
+  );
   const [currentPage, setCurrentPage] = useState(1);
-  const [startDate, setStartDate] = useState();
-  const [endDate, setEndDate] = useState();
   const recordsPerPage = 10;
 
-  useEffect(() => {
-    const fetchRecords = async () => {
-      const attendanceDocRef = doc(db, "attendance", userId);
+  const startDate = dayjs(selectedDates.startDate, "DD-MM-YYYY").toDate();
+  const endDate = dayjs(selectedDates.endDate, "DD-MM-YYYY").toDate();
 
-      setStartDate(selectedDates.selectedDate.startDate);
-      setEndDate(selectedDates.selectedDate.endDate);
-
-      const attendanceDocSnap = await getDoc(attendanceDocRef);
-
-      if (attendanceDocSnap.exists()) {
-        const data = attendanceDocSnap.data();
-        const recordsList = Object.entries(data).map(([id, details]) => ({
-          id,
-          ...details,
-        }));
-        setRecords(recordsList);
-      }
-
-      console.log(records);
-    };
-
-    fetchRecords();
-  }, []);
-
-  const updateStatusForLateArrival = (punchin) => {
-    return punchin > "09:00 AM" ? "Late arrival" : "On time";
-  };
-
-  const filteredRecords = records.filter((record) => {
-    const formattedDate = dayjs(record.id, "dd-mm-yyyy").toDate();
-    return formattedDate >= startDate && formattedDate <= endDate;
+  console.log(startDate, endDate);
+  const filteredRecords = attendanceRecords.filter((record) => {
+    const date = dayjs(record.id, "DD-MM-YYYY").isBetween(
+      startDate,
+      endDate,
+      null,
+      "[]"
+    );
+    return date;
   });
 
-  console.log(filteredRecords);
-
-  const totalPages = Math.ceil(filteredRecords.length / recordsPerPage);
-
-  const handlePreviousPage = () => {
-    setCurrentPage((prevPage) => Math.max(prevPage - 1, 1));
-  };
+  const totalRecords = filteredRecords.length;
+  const totalPages = Math.ceil(totalRecords / recordsPerPage);
+  const indexOfLastRecord = currentPage * recordsPerPage;
+  const indexOfFirstRecord = indexOfLastRecord - recordsPerPage;
+  const currentRecords = filteredRecords.slice(
+    indexOfFirstRecord,
+    indexOfLastRecord
+  );
 
   const handleNextPage = () => {
-    setCurrentPage((prevPage) => Math.min(prevPage + 1, totalPages));
+    if (currentPage < totalPages) setCurrentPage((prev) => prev + 1);
   };
 
-  const startIndex = (currentPage - 1) * recordsPerPage;
-  const currentRecords = filteredRecords.slice(
-    startIndex,
-    startIndex + recordsPerPage
-  );
+  const handlePreviousPage = () => {
+    if (currentPage > 1) setCurrentPage((prev) => prev - 1);
+  };
 
   return (
     <>
@@ -78,40 +60,34 @@ export default function UserTable({ userId, ...selectedDates }) {
           </tr>
         </thead>
         <tbody>
-          {currentRecords.map((record) => {
-            const status = updateStatusForLateArrival(record.punchin);
-            let statusClasses = "text-black";
-            if (status === "Late arrival") {
-              statusClasses = "text-yellow-500";
-            }
-
-            return (
-              <tr key={record.id}>
-                <StyledTD>{record.id}</StyledTD>
-                <StyledTD>{record.status}</StyledTD>
-                <StyledTD className={` ${statusClasses}`}>
-                  {record.status === "Absent" ? "--" : record.punchin}
-                </StyledTD>
-                <StyledTD>
-                  {record.status === "Absent" ? "--" : record.punchout}
-                </StyledTD>
-                <StyledTD>
-                  {record.status === "Absent" ? "--" : record.duration}
-                </StyledTD>
-              </tr>
-            );
-          })}
+          {currentRecords.map((record) => (
+            <tr key={record.id}>
+              <StyledTD>{record.id}</StyledTD>
+              <StyledTD>{record.status}</StyledTD>
+              <StyledTD>{record.punchin}</StyledTD>
+              <StyledTD>{record.punchout}</StyledTD>
+              <StyledTD>{record.duration}</StyledTD>
+            </tr>
+          ))}
         </tbody>
       </Table>
-      <div className="flex justify-between items-center mt-4">
-        <button onClick={handlePreviousPage} className="p-2">
-          <FcPrevious size={24} />
+      <div className="flex justify-center items-center my-4">
+        <button
+          className="bg-sky-400 text-white px-4 py-2 rounded-l-lg disabled:opacity-50"
+          onClick={handlePreviousPage}
+          disabled={currentPage === 1}
+        >
+          <FcPrevious />
         </button>
-        <span className="text-gray-700">
+        <span className="px-4 py-2 bg-white border border-gray-300 rounded">
           Page {currentPage} of {totalPages}
         </span>
-        <button onClick={handleNextPage} className="p-2">
-          <FcNext size={24} />
+        <button
+          className="bg-sky-400 text-white px-4 py-2 rounded-r-lg disabled:opacity-50"
+          onClick={handleNextPage}
+          disabled={currentPage === totalPages}
+        >
+          <FcNext />
         </button>
       </div>
     </>

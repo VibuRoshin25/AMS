@@ -1,72 +1,27 @@
-import { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
 import { Pie } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
-import { getDoc, doc } from "firebase/firestore";
-import { db } from "../firebase/firebaseConfig";
 import ProfileCard from "./ProfileCard";
 import ProfilePhoto from "./ProfilePhoto";
 ChartJS.register(ArcElement, Tooltip, Legend);
+import ChangePhoto from "./ChangePhoto";
+import Loading from "../Loading";
 
 export default function UserProfile({ userId }) {
-  const [attendanceRecords, setAttendanceRecords] = useState([]);
-  const [userData, setUserData] = useState([]);
-  const [totalDays, setTotalDays] = useState(0);
-  const [presentDays, setPresentDays] = useState(0);
-  const [absentDays, setAbsentDays] = useState(0);
-  const [availableLeaves, setAvailableLeave] = useState(0);
+  const { userData, attendanceRecords, loading } = useSelector(
+    (state) => state.userFilters
+  );
 
-  useEffect(() => {
-    const fetchRecords = async () => {
-      try {
-        const attendanceDocRef = doc(db, "attendance", userId);
-        const userDocRef = doc(db, "employees", userId);
+  if (loading) return <Loading />;
 
-        const attendanceDocSnap = await getDoc(attendanceDocRef);
-        const userDocSnap = await getDoc(userDocRef);
-
-        if (attendanceDocSnap.exists()) {
-          const data = attendanceDocSnap.data();
-          const attendanceArray = Object.entries(data).map(([id, details]) => ({
-            id,
-            ...details,
-          }));
-          setAttendanceRecords(attendanceArray);
-        }
-        if (userDocSnap.exists()) {
-          const data = userDocSnap.data();
-
-          setUserData(data);
-          console.log(userData);
-        }
-      } catch (error) {
-        console.error("Error fetching attendance record: ", error);
-      }
-    };
-
-    fetchRecords();
-    const currentDate = new Date();
-    const currentMonth = currentDate.getMonth() + 1;
-    const currentYear = currentDate.getFullYear();
-
-    const totalDaysInMonth = calculateTotalDays(currentMonth, currentYear);
-    setTotalDays(totalDaysInMonth);
-
-    const presentCount = attendanceRecords.filter(
-      (record) => record.status === "Present"
-    ).length;
-    setPresentDays(presentCount);
-
-    const absentCount = attendanceRecords.filter(
-      (record) => record.status === "Absent"
-    ).length;
-    setAbsentDays(absentCount);
-
-    setAvailableLeave(20);
-  }, []);
-
-  const calculateTotalDays = (month, year) => {
-    return new Date(year, month, 0).getDate();
-  };
+  const presentDays = attendanceRecords.filter(
+    (record) => record.status === "Present"
+  ).length;
+  const absentDays = attendanceRecords.filter(
+    (record) => record.status === "Absent"
+  ).length;
+  const totalDays = new Date().getDate(); //Change this
+  const availableLeaves = 20;
 
   const pieData = {
     labels: ["Present Days", "Absent Days", "Total Days"],
@@ -104,7 +59,9 @@ export default function UserProfile({ userId }) {
         <div className="flex flex-col lg:w-3/3">
           <div className="flex justify-between">
             <div className="flex  items-center w-full justify-between">
-              <ProfilePhoto />
+              <div className="relative inline-block">
+                <ProfilePhoto userId={userId} classnames="w-24 h-24" />
+              </div>
               <div className="text-center lg:text-left">
                 <h2 className="text-3xl font-bold text-sky-500">
                   {userData.name}
@@ -117,7 +74,7 @@ export default function UserProfile({ userId }) {
             </div>
           </div>
           <div className="w-full mt-6">
-            <div className="grid grid-cols-1 sm:grid-cols-2  gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <ProfileCard
                 bgClass="bg-sky-500"
                 label="Total Days"

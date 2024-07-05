@@ -17,6 +17,8 @@ const PageOutline = ({ children }) => {
       if (contentRef.current) {
         const contentHeight = contentRef.current.scrollHeight;
         const screenHeight = window.innerHeight;
+        console.log("Content Height:", contentHeight);
+        console.log("Screen Height:", screenHeight);
         if (contentHeight > screenHeight) {
           setHeightClass("h-full");
         } else {
@@ -29,6 +31,10 @@ const PageOutline = ({ children }) => {
     window.addEventListener("resize", updateHeightClass);
     return () => window.removeEventListener("resize", updateHeightClass);
   }, []);
+
+  useEffect(() => {
+    console.log("Height Class Updated:", heightClass);
+  }, [heightClass]);
 
   return (
     <>

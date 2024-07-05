@@ -2,7 +2,7 @@ const NavAnchor = ({ href, children }) => {
   return (
     <a
       href={href}
-      className="text-sky-900 py-2 px-4 hover:bg-sky-500 hover:text-white w-full text-left text-2xl font-serif"
+      className="py-2 px-6 hover:bg-sky-500 hover:text-white w-full text-sky-800 text-left text-xl flex justify-start items-center gap-8 "
     >
       {children}
     </a>

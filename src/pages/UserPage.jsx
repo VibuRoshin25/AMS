@@ -1,20 +1,25 @@
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  fetchUserData,
+  fetchAttendanceRecords,
+  setSelectedDates,
+} from "../store/userFilterSlice";
 import StyledDatePicker from "../components/StyledDatePicker";
 import SearchBar from "../components/SearchBar";
-import UserPunchin from "../components/UserPunchin";
-import Userprofile from "../components/UserProfile";
+import UserPunchin from "../components/profileComponents/UserPunchin";
+import UserProfile from "../components/profileComponents/UserProfile";
 import UserTable from "../components/tables/UserTable";
 import PageOutline from "../components/PageOutline";
-import { useState } from "react";
 
 export default function UserPage({ userId }) {
-  const today = new Date();
-  const oneMonthAgo = new Date(today);
-  oneMonthAgo.setMonth(today.getMonth() - 1);
-  const [selectedDates, setSelectedDates] = useState({
-    startDate: oneMonthAgo,
-    endDate: today,
-  });
-  console.log(selectedDates);
+  const dispatch = useDispatch();
+  const selectedDates = useSelector((state) => state.userFilters.selectedDates);
+
+  useEffect(() => {
+    dispatch(fetchUserData(userId));
+    dispatch(fetchAttendanceRecords({ userId, selectedDates }));
+  }, [dispatch, userId, selectedDates]);
 
   return (
     <PageOutline>
@@ -24,7 +29,7 @@ export default function UserPage({ userId }) {
             <UserPunchin userId={userId} />
           </div>
           <div className="p-6 rounded-lg h-90px flex flex-col">
-            <Userprofile userId={userId} />
+            <UserProfile userId={userId} />
           </div>
         </div>
       </div>
@@ -32,7 +37,7 @@ export default function UserPage({ userId }) {
         <StyledDatePicker
           asSingle={false}
           selectedDate={selectedDates}
-          onSelectDate={setSelectedDates}
+          onSelectDate={(dates) => dispatch(setSelectedDates(dates))}
         />
         <SearchBar />
       </div>

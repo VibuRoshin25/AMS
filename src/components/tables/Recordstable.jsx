@@ -1,71 +1,37 @@
 import { useState, useEffect } from "react";
 import { FcNext, FcPrevious } from "react-icons/fc";
-import { db } from "../../firebase/firebaseConfig";
-import { collection, getDocs } from "firebase/firestore";
+import { useDispatch, useSelector } from "react-redux";
 import { roles, departments, statuses } from "../../utils/constants";
+import {
+  setSelectedRole,
+  setSelectedDepartment,
+  setSelectedStatus,
+  fetchRecords,
+  selectSelectedDate,
+  selectSelectedName,
+  selectFilters,
+} from "../../store/adminFilterSlice";
 import EditModal from "../modals/EditModal";
 import StyledTD from "../StyledTD";
 import StyledTH from "../StyledTH";
 import FieldSelector from "../FieldSelector";
 import Table from "./Table";
-import { getDate } from "../../utils/dateMethods";
+import Loading from "../Loading";
 
-export default function Recordstable({ selectedName, ...selectedDate }) {
-  const [records, setRecords] = useState([]);
-  const [selectedRole, setSelectedRole] = useState("All");
-  const [selectedDepartment, setSelectedDepartment] = useState("All");
-  const [selectedStatus, setSelectedStatus] = useState("All");
+export default function RecordStable() {
+  const dispatch = useDispatch();
+  const selectedDate = useSelector(selectSelectedDate);
+  const selectedName = useSelector(selectSelectedName);
+  const { selectedRole, selectedDepartment, selectedStatus, records, loading } =
+    useSelector(selectFilters);
+
   const [currentPage, setCurrentPage] = useState(1);
-  const [editRecord, setEditRecord] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const recordsPerPage = 10;
 
   useEffect(() => {
-    const fetchRecords = async () => {
-      const employeesCollection = collection(db, "employees");
-      const attendanceCollection = collection(db, "attendance");
-      const selDate = getDate(selectedDate.startDate);
-
-      const [employeesSnapshot, attendanceSnapshot] = await Promise.all([
-        getDocs(employeesCollection),
-        getDocs(attendanceCollection),
-      ]);
-
-      const employeesList = employeesSnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-
-      const attendanceList = attendanceSnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-
-      const employeeMap = new Map(employeesList.map((item) => [item.id, item]));
-      const attendanceMap = new Map(
-        attendanceList.map((item) => [item.id, item])
-      );
-
-      const combinedRecords = [...attendanceMap.keys()].map((id) => {
-        const employee = employeeMap.get(id) || {};
-        const attendance = attendanceMap.get(id) || {};
-        return {
-          ...employee,
-          ...attendance[selDate],
-        };
-      });
-
-      console.log(combinedRecords);
-      setRecords(combinedRecords);
-    };
-
-    fetchRecords();
-  }, [selectedDate]);
-
-  const updateStatusForLateArrival = (punchin, status) => {
-    return punchin > "09:00 AM" ? "Late arrival" : status;
-  };
+    dispatch(fetchRecords(selectedDate));
+  }, [selectedDate, dispatch]);
 
   const filteredRecords = records.filter((record) => {
     return (
@@ -88,29 +54,13 @@ export default function Recordstable({ selectedName, ...selectedDate }) {
     setCurrentPage((prevPage) => Math.min(prevPage + 1, totalPages));
   };
 
-  const handleEditClick = (record) => {
-    setEditRecord(record);
-    setIsModalOpen(true);
-  };
-
-  const handleSaveEdit = (updatedRecord) => {
-    setRecords((prevRecords) =>
-      prevRecords.map((record) =>
-        record.id === updatedRecord.id ? updatedRecord : record
-      )
-    );
-    setIsModalOpen(false);
-  };
-
-  const closeEditModal = () => {
-    setIsModalOpen(false);
-  };
-
   const startIndex = (currentPage - 1) * recordsPerPage;
   const currentRecords = filteredRecords.slice(
     startIndex,
     startIndex + recordsPerPage
   );
+
+  if (loading) return <Loading />;
 
   return (
     <>
@@ -177,16 +127,12 @@ export default function Recordstable({ selectedName, ...selectedDate }) {
         </thead>
         <tbody>
           {currentRecords.map((record) => {
-            const status = updateStatusForLateArrival(
-              record.Checkin,
-              record.Status
-            );
             let statusClasses =
               "bg-green-200 text-green-500 py-1 px-3 rounded text-lg";
-            if (status === "Absent") {
+            if (record.status === "CL" || record.status === "SL") {
               statusClasses =
-                "bg-red-200 text-red-500 py-1 px-3 rounded text-lg";
-            } else if (status === "Late arrival") {
+                "bg-red-200 text-red-500 w-1/2 py-1 px-3 rounded text-lg";
+            } else if (record.status === "Half Day") {
               statusClasses =
                 "bg-yellow-200 text-yellow-500 py-1 px-3 rounded text-lg";
             }
@@ -197,24 +143,17 @@ export default function Recordstable({ selectedName, ...selectedDate }) {
                 <StyledTD>{record.role}</StyledTD>
                 <StyledTD>{record.department}</StyledTD>
                 <StyledTD>
-                  <button className={statusClasses}>{status}</button>
+                  <button className={statusClasses}>{record.status}</button>
                 </StyledTD>
+                <StyledTD>{record.punchin ? record.punchin : "--"}</StyledTD>
+                <StyledTD>{record.punchout ? record.punchout : "--"}</StyledTD>
+                <StyledTD>{record.duration ? record.duration : "--"}</StyledTD>
                 <StyledTD>
-                  {status === "Absent" ? "--" : record.punchin}
-                </StyledTD>
-                <StyledTD>
-                  {status === "Absent" ? "--" : record.punchout}
-                </StyledTD>
-                <StyledTD>
-                  {status === "Absent" ? "--" : record.duration}
-                </StyledTD>
-                <StyledTD>
-                  <button
-                    onClick={() => handleEditClick(record)}
-                    className="bg-blue-500 text-white px-4 py-2 rounded"
-                  >
-                    Edit
-                  </button>
+                  <EditModal
+                    item={record}
+                    selectedDate={selectedDate.startDate}
+                    disable={record.status ? false : true}
+                  />
                 </StyledTD>
               </tr>
             );
@@ -233,13 +172,6 @@ export default function Recordstable({ selectedName, ...selectedDate }) {
             <FcNext size={24} />
           </button>
         </div>
-        {isModalOpen && (
-          <EditModal
-            item={editRecord}
-            onSave={handleSaveEdit}
-            onClose={closeEditModal}
-          />
-        )}
       </div>
     </>
   );
