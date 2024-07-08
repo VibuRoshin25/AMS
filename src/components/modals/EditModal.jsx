@@ -1,7 +1,7 @@
 import { useState } from "react";
 import PropTypes from "prop-types";
 import TimeInput from "../TimeInput";
-import { updateRecord } from "../../store/adminFilterSlice";
+import { updateRecord } from "../../store/recordsFilterSlice";
 import { useDispatch } from "react-redux";
 import dayjs from "dayjs";
 import CustomModal from "./Modal";

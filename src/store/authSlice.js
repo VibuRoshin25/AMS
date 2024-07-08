@@ -13,11 +13,15 @@ export const fetchCurrentUser = createAsyncThunk(
       const querySnapshot = await getDocs(q);
       if (!querySnapshot.empty) {
         const doc = querySnapshot.docs[0];
+        const userData = doc.data();
         return {
           uid: user.uid,
           email: user.email,
-          type: doc.data().type,
+          type: userData.type,
           userId: doc.id,
+          name: userData.name,
+          department: userData.department,
+          role: userData.role,
         };
       }
       throw new Error("No such document!");

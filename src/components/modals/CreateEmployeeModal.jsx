@@ -1,84 +1,47 @@
 import { useState } from "react";
-import { collection, doc, setDoc, getDocs } from "firebase/firestore";
+import { collection, doc, setDoc } from "firebase/firestore";
 import { db } from "../../firebase/firebaseConfig";
 import Button from "../Button";
 import CustomModal from "./Modal";
-import { toast } from "react-toastify";
 import { signUp } from "../../services/authService";
 import LabeledInput from "../LabeledInput";
-import { departments, roles } from "../../utils/constants";
+import { selectRoles } from "../../store/rolesSlice";
+import { selectDepartments } from "../../store/departmentsSlice";
 import { validateEmail, validatePassword } from "../../utils/validationMethods";
+import { useSelector } from "react-redux";
+import { showSuccessToast, showErrorToast } from "../../utils/toastUtils"; // Import the toast utility functions
 
 const CreateEmployeeModal = () => {
   const [name, setName] = useState("");
+  const [id, setId] = useState("");
   const [dept, setDept] = useState("");
   const [role, setRole] = useState("");
   const [email, setEmail] = useState("");
+  const [isAdmin, setIsAdmin] = useState(false);
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const generateID = async () => {
-    try {
-      const collectionRef = collection(db, "employees");
-      const querySnapshot = await getDocs(collectionRef);
-      if (querySnapshot.size === 0) {
-        return "FP1";
-      }
-
-      const docsLength = querySnapshot.docs.length;
-      const id = `FP${docsLength + 1}`;
-      return id;
-    } catch (error) {
-      console.error("Error retrieving documents: ", error);
-    }
-  };
+  const roles = useSelector(selectRoles);
+  const departments = useSelector(selectDepartments);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!validateEmail(email)) {
-      toast.error("Invalid email format", {
-        position: "top-center",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "colored",
-      });
+      showErrorToast("Invalid email format");
       return;
     }
 
     if (!validatePassword(password)) {
-      toast.error(
-        "Password must be 6-12 characters long, include uppercase and lowercase letters, and a number",
-        {
-          position: "top-center",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "colored",
-        }
+      showErrorToast(
+        "Password must be 6-12 characters long, include uppercase and lowercase letters, and a number"
       );
       return;
     }
 
     if (password !== confirmPassword) {
-      toast.error("Passwords do not match", {
-        position: "top-center",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "colored",
-      });
+      showErrorToast("Passwords do not match");
       return;
     }
 
@@ -89,7 +52,6 @@ const CreateEmployeeModal = () => {
         role: role,
         email: email,
       };
-      const id = await generateID();
 
       const collectionRef = collection(db, "employees");
       const docRef = doc(collectionRef, id);
@@ -97,30 +59,12 @@ const CreateEmployeeModal = () => {
 
       await signUp(email, password);
 
-      toast.success(" Employee added successfully!", {
-        position: "top-center",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "colored",
-      });
+      showSuccessToast("Employee added successfully!");
 
       setIsModalOpen(false);
     } catch (error) {
       console.log(error);
-      toast.error("Failed to add employee.", {
-        position: "top-center",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "colored",
-      });
+      showErrorToast("Failed to add employee.");
     }
   };
 
@@ -141,37 +85,57 @@ const CreateEmployeeModal = () => {
             label="Name"
             value={name}
             onChange={setName}
+            type="text"
             placeholder="Enter name"
+          />
+          <LabeledInput
+            label="Employee ID"
+            value={id}
+            onChange={setId}
+            placeholder="Enter Employee Id"
+            type="text"
           />
           <LabeledInput
             label="Department"
             value={dept}
             onChange={setDept}
             options={departments}
+            type="select"
           />
           <LabeledInput
             label="Role"
             value={role}
             onChange={setRole}
             options={roles}
+            type="select"
           />
+          <LabeledInput
+            label="Admin"
+            value={isAdmin}
+            onChange={setIsAdmin}
+            type="checkbox"
+          />
+
           <LabeledInput
             label="Email"
             value={email}
             onChange={setEmail}
             placeholder="Enter email"
+            type="email"
           />
           <LabeledInput
             label="Password"
             value={password}
             onChange={setPassword}
             placeholder="Enter password"
+            type="password"
           />
           <LabeledInput
             label="Confirm Password"
             value={confirmPassword}
             onChange={setConfirmPassword}
             placeholder="Confirm password"
+            type="password"
           />
           <Button type="submit">Create Employee</Button>
         </form>

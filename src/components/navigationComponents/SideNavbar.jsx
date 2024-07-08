@@ -1,5 +1,11 @@
 import { HiMenu } from "react-icons/hi";
-import { RxDashboard, RxTimer, RxCalendar, RxReader } from "react-icons/rx";
+import {
+  RxDashboard,
+  RxTimer,
+  RxCalendar,
+  RxReader,
+  RxTable,
+} from "react-icons/rx";
 import classNames from "classnames";
 import NavAnchor from "./NavAnchor";
 import logo from "../../assets/flipopay-logo.png";
@@ -38,6 +44,9 @@ const SideNavbar = ({ isExpanded, toggleNavbar }) => {
             <div className="flex w-full mb-4"></div>
             <NavAnchor href="/">
               <RxDashboard /> Dashboard
+            </NavAnchor>
+            <NavAnchor href="/reports">
+              <RxTable /> Reports
             </NavAnchor>
             <NavAnchor href="/shift-policies">
               <RxTimer />

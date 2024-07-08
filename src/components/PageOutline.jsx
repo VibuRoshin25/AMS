@@ -1,4 +1,5 @@
 import Header from "./Header";
+import Footer from "./Footer";
 import SideNavbar from "./navigationComponents/SideNavbar";
 import classNames from "classnames";
 import { useState, useEffect, useRef } from "react";
@@ -37,7 +38,7 @@ const PageOutline = ({ children }) => {
         <div
           ref={contentRef}
           className={classNames(
-            "flex flex-col items-center relative grow",
+            "flex flex-col items-center justify-stretch h-full relative grow",
             heightClass
           )}
         >
@@ -46,6 +47,7 @@ const PageOutline = ({ children }) => {
           )}
           <Header />
           {children}
+          <Footer />
         </div>
       </div>
     </>

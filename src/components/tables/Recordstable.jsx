@@ -1,7 +1,12 @@
 import { useState, useEffect } from "react";
 import { FcNext, FcPrevious } from "react-icons/fc";
 import { useDispatch, useSelector } from "react-redux";
-import { roles, departments, statuses } from "../../utils/constants";
+import { fetchRoles, selectRoles } from "../../store/rolesSlice";
+import { fetchStatuses, selectStatuses } from "../../store/statusSlice";
+import {
+  fetchDepartments,
+  selectDepartments,
+} from "../../store/departmentsSlice";
 import {
   setSelectedRole,
   setSelectedDepartment,
@@ -10,7 +15,7 @@ import {
   selectSelectedDate,
   selectSelectedName,
   selectFilters,
-} from "../../store/adminFilterSlice";
+} from "../../store/recordsFilterSlice";
 import EditModal from "../modals/EditModal";
 import StyledTD from "../StyledTD";
 import StyledTH from "../StyledTH";
@@ -20,17 +25,25 @@ import Loading from "../Loading";
 
 export default function RecordsTable() {
   const dispatch = useDispatch();
+
   const selectedDate = useSelector(selectSelectedDate);
   const selectedName = useSelector(selectSelectedName);
   const { selectedRole, selectedDepartment, selectedStatus, records, loading } =
     useSelector(selectFilters);
+  const roles = useSelector(selectRoles);
+  const statuses = useSelector(selectStatuses);
+  const departments = useSelector(selectDepartments);
 
   const [currentPage, setCurrentPage] = useState(1);
 
+  console.log(roles);
   const recordsPerPage = 10;
 
   useEffect(() => {
     dispatch(fetchRecords(selectedDate));
+    dispatch(fetchRoles());
+    dispatch(fetchStatuses());
+    dispatch(fetchDepartments());
   }, [selectedDate, dispatch]);
 
   const filteredRecords = records.filter((record) => {

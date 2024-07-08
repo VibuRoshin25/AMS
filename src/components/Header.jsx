@@ -2,7 +2,7 @@ import Button from "./Button";
 import logo from "../assets/flipopay-logo.png";
 import heading from "../assets/heading.png";
 import { signOut, getAuth } from "firebase/auth";
-import ProfilePhoto from "./profileComponents/ProfilePhoto";
+// import ProfilePhoto from "./profileComponents/ProfilePhoto";
 
 const Header = () => {
   const auth = getAuth();
@@ -11,26 +11,30 @@ const Header = () => {
       await signOut(auth);
       console.log("Logout clicked");
     } catch (error) {
-      console.log();
+      console.error("Error logging out:", error);
     }
   };
 
   return (
-    <header className="w-full drop-shadow-xl bg-sky-200 flex  mb-4 justify-between items-center h-16 shadow-md ">
+    <header className="w-full bg-sky-200 flex items-center justify-between h-16 shadow-md px-4 md:px-8 mb-4">
       <div className="flex items-center">
         <a href="/">
-          <img src={logo} alt="Logo" className="h-16 py-4 px-2 ml-2" />
+          <img
+            src={logo}
+            alt="Logo"
+            className="h-12 md:h-16 py-2 md:py-4 px-2"
+          />
         </a>
       </div>
       <img
         src={heading}
-        alt="heading"
-        className="h-24 fixed left-1/3 py-4 px-2 ml-2"
+        alt="Heading"
+        className="h-16 md:h-24 py-2 md:py-4 px-2"
       />
       {/* <h1 className="left-1/2 transform -translate-x-1/2 text-xl font-bold">
         Attendance Management System
       </h1> */}
-      <div className="flex items-center justify-end">
+      <div className="flex items-center">
         <Button onClick={handleLogout}>Logout</Button>
       </div>
     </header>
