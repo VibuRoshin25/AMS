@@ -4,8 +4,8 @@ const Footer = () => {
       <div className="w-full flex flex-col md:flex-row items-center justify-between px-4 md:px-8">
         <span className="text-sm text-gray-500 text-center md:text-left">
           © 2023{" "}
-          <a href="https://flowbite.com/" className="hover:underline">
-            Flowbite™
+          <a href="https://flipopay.com/" className="hover:underline">
+            Flipopay™
           </a>
           . All Rights Reserved.
         </span>

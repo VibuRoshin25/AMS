@@ -9,7 +9,7 @@ import { selectRoles } from "../../store/rolesSlice";
 import { selectDepartments } from "../../store/departmentsSlice";
 import { validateEmail, validatePassword } from "../../utils/validationMethods";
 import { useSelector } from "react-redux";
-import { showSuccessToast, showErrorToast } from "../../utils/toastUtils"; // Import the toast utility functions
+import { showSuccessToast, showErrorToast } from "../../utils/toastUtils";
 
 const CreateEmployeeModal = () => {
   const [name, setName] = useState("");

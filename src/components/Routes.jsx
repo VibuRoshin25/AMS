@@ -3,9 +3,9 @@ import LoginPage from "../pages/LoginPage";
 import AdminPage from "../pages/AdminPage";
 import RecordsPage from "../pages/RecordsPage";
 import UserPage from "../pages/UserPage";
-import LeavesPage from "../pages/LeavesPage";
+import LeavePoliciesPage from "../pages/LeavePoliciesPage";
 import HolidaysPage from "../pages/HolidaysPage";
-import ShiftsPage from "../pages/ShiftsPage";
+import ShiftPoliciesPage from "../pages/ShiftPoliciesPage";
 import NotFoundPage from "../pages/NotFoundPage";
 import { useSelector } from "react-redux";
 import { Route, Routes, Navigate } from "react-router-dom";
@@ -53,7 +53,7 @@ const AmsRoutes = () => {
         path="/leave-policies"
         element={
           <Protected>
-            <LeavesPage />
+            <LeavePoliciesPage />
           </Protected>
         }
       />
@@ -77,7 +77,7 @@ const AmsRoutes = () => {
         path="/shift-policies"
         element={
           <Protected>
-            <ShiftsPage />
+            <ShiftPoliciesPage />
           </Protected>
         }
       />

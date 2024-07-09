@@ -1,13 +1,23 @@
-import useFetchCollection from "../hooks/UseFetchCollection.jsx";
-import StyledTH from "../components/StyledTH";
+import StyledTH from "../components/StyledTH.jsx";
 import StyledTD from "../components/StyledTD.jsx";
 import Table from "../components/tables/Table.jsx";
-import AddLeaveModal from "../components/modals/AddLeaveModal.jsx";
+import AddLeaveModal from "../components/modals/AddLeavePolicyModal.jsx";
 import PageOutline from "../components/PageOutline.jsx";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  fetchLeavePolicies,
+  selectLeaves,
+} from "../store/leavePoliciesSlice.js";
 
-const LeavesPage = () => {
-  const leaves = useFetchCollection("leaves");
-  console.log(leaves);
+const LeavePoliciesPage = () => {
+  const dispatch = useDispatch();
+
+  const leaves = useSelector(selectLeaves);
+
+  useEffect(() => {
+    dispatch(fetchLeavePolicies());
+  }, [dispatch]);
 
   return (
     <>
@@ -40,4 +50,4 @@ const LeavesPage = () => {
   );
 };
 
-export default LeavesPage;
+export default LeavePoliciesPage;

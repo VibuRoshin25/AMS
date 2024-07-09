@@ -5,6 +5,9 @@ import userFiltersReducer from "./userFilterSlice";
 import rolesReducer from "./rolesSlice";
 import statusReducer from "./statusSlice";
 import departmentsReducer from "./departmentsSlice";
+import shiftPoliciesReducer from "./shiftPoliciesSlice";
+import leavePoliciesReducer from "./leavePoliciesSlice";
+import holidaysReducer from "./holidaysSlice";
 
 const store = configureStore({
   reducer: {
@@ -14,6 +17,9 @@ const store = configureStore({
     roles: rolesReducer,
     status: statusReducer,
     departments: departmentsReducer,
+    shiftPolicies: shiftPoliciesReducer,
+    leavePolicies: leavePoliciesReducer,
+    holidays: holidaysReducer,
   },
 });
 
