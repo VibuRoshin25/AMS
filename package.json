@@ -17,6 +17,7 @@
     "@heroicons/react": "^2.1.4",
     "@mui/lab": "^5.0.0-alpha.170",
     "@mui/material": "^5.15.20",
+    "@mui/x-charts": "^7.9.0",
     "@mui/x-date-pickers": "^7.7.0",
     "@reduxjs/toolkit": "^2.2.6",
     "@tailwindcss/aspect-ratio": "^0.4.2",

@@ -16,7 +16,9 @@ import {
   selectSelectedName,
   selectFilters,
 } from "../../store/recordsFilterSlice";
-import EditModal from "../modals/EditModal";
+import EditRecordModal from "../modals/EditRecordModal";
+import DeleteRecordModal from "../modals/DeleteRecordModal";
+
 import StyledTD from "../StyledTD";
 import StyledTH from "../StyledTH";
 import FieldSelector from "../FieldSelector";
@@ -135,7 +137,8 @@ export default function RecordsTable() {
             <StyledTH>Punch In</StyledTH>
             <StyledTH>Punch Out</StyledTH>
             <StyledTH>Work Hours</StyledTH>
-            <StyledTH className="rounded-tr-lg">Edit</StyledTH>
+            <StyledTH>Edit</StyledTH>
+            <StyledTH className="rounded-tr-lg">Delete</StyledTH>
           </tr>
         </thead>
         <tbody>
@@ -162,7 +165,14 @@ export default function RecordsTable() {
                 <StyledTD>{record.punchout ? record.punchout : "--"}</StyledTD>
                 <StyledTD>{record.duration ? record.duration : "--"}</StyledTD>
                 <StyledTD>
-                  <EditModal
+                  <EditRecordModal
+                    item={record}
+                    selectedDate={selectedDate.startDate}
+                    disable={record.status ? false : true}
+                  />
+                </StyledTD>
+                <StyledTD>
+                  <DeleteRecordModal
                     item={record}
                     selectedDate={selectedDate.startDate}
                     disable={record.status ? false : true}

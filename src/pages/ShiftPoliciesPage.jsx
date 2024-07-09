@@ -1,7 +1,7 @@
 import StyledTH from "../components/StyledTH.jsx";
 import StyledTD from "../components/StyledTD.jsx";
 import Table from "../components/tables/Table.jsx";
-import AddLeaveModal from "../components/modals/AddLeavePolicyModal.jsx";
+import AddShiftPolicyModal from "../components/modals/AddShiftPolicyModal.jsx";
 import PageOutline from "../components/PageOutline.jsx";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -21,7 +21,7 @@ const ShiftPoliciesPage = () => {
   return (
     <>
       <PageOutline>
-        <AddLeaveModal />
+        <AddShiftPolicyModal />
         <Table>
           <thead className="bg-sky-300 rounded-t-lg">
             <tr>

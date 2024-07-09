@@ -1,4 +1,4 @@
-import Button from "./Button";
+import Button from "./buttons/Button";
 import logo from "../assets/flipopay-logo.png";
 import heading from "../assets/heading.png";
 import { signOut, getAuth } from "firebase/auth";

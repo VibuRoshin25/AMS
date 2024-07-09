@@ -5,11 +5,12 @@ import { updateRecord } from "../../store/recordsFilterSlice";
 import { useDispatch } from "react-redux";
 import dayjs from "dayjs";
 import CustomModal from "./Modal";
-import Button from "../Button";
+import Button from "../buttons/Button";
+import EditButton from "../buttons/EditButton";
 import { calculateStatus } from "../../utils/statusMethods";
 import { calculateDuration } from "../../utils/dateMethods";
 
-const EditModal = ({ item, selectedDate, disable }) => {
+const EditRecordModal = ({ item, selectedDate, disable }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const dispatch = useDispatch();
 
@@ -50,16 +51,14 @@ const EditModal = ({ item, selectedDate, disable }) => {
     setIsModalOpen(false);
   };
 
-  const closeEditModal = () => {
+  const closeEditRecordModal = () => {
     setIsModalOpen(false);
   };
 
   return (
     <div>
-      <Button onClick={() => setIsModalOpen(true)} disable={disable}>
-        Edit Record
-      </Button>
-      <CustomModal isOpen={isModalOpen} onClose={closeEditModal}>
+      <EditButton onClick={() => setIsModalOpen(true)} disable={disable} />
+      <CustomModal isOpen={isModalOpen} onClose={closeEditRecordModal}>
         <form onSubmit={handleSubmit} className="flex flex-col items-center">
           <div className="mb-4">
             <p className="font-sans font-bold text-center text-2xl">
@@ -80,7 +79,7 @@ const EditModal = ({ item, selectedDate, disable }) => {
             />
           </div>
           <div className="flex">
-            <Button type="button" onClick={closeEditModal}>
+            <Button type="button" onClick={closeEditRecordModal}>
               Cancel
             </Button>
             <Button type="submit">Save</Button>
@@ -91,7 +90,7 @@ const EditModal = ({ item, selectedDate, disable }) => {
   );
 };
 
-EditModal.propTypes = {
+EditRecordModal.propTypes = {
   item: PropTypes.shape({
     id: PropTypes.string,
     name: PropTypes.string,
@@ -101,4 +100,4 @@ EditModal.propTypes = {
   }),
 };
 
-export default EditModal;
+export default EditRecordModal;

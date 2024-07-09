@@ -33,7 +33,7 @@ const PageOutline = ({ children }) => {
 
   return (
     <>
-      <div className="flex flex-row w-full">
+      <div className="flex flex-row w-full bg-slate-200">
         <SideNavbar isExpanded={isExpanded} toggleNavbar={toggleNavbar} />
         <div
           ref={contentRef}

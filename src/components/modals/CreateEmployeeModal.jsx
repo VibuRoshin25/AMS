@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { collection, doc, setDoc } from "firebase/firestore";
 import { db } from "../../firebase/firebaseConfig";
-import Button from "../Button";
+import Button from "../buttons/Button";
 import CustomModal from "./Modal";
 import { signUp } from "../../services/authService";
 import LabeledInput from "../LabeledInput";

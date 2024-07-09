@@ -4,7 +4,7 @@ import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import ProfileCard from "./ProfileCard";
 import ProfilePhoto from "./ProfilePhoto";
 ChartJS.register(ArcElement, Tooltip, Legend);
-import ChangePhoto from "./ChangePhoto";
+// import ChangePhoto from "./ChangePhoto";
 import Loading from "../Loading";
 
 export default function UserProfile({ userId }) {

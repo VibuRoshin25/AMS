@@ -1,7 +1,7 @@
 import StyledTH from "../components/StyledTH.jsx";
 import StyledTD from "../components/StyledTD.jsx";
 import Table from "../components/tables/Table.jsx";
-import AddLeaveModal from "../components/modals/AddLeavePolicyModal.jsx";
+import AddLeavePolicyModal from "../components/modals/AddLeavePolicyModal.jsx";
 import PageOutline from "../components/PageOutline.jsx";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -22,7 +22,7 @@ const LeavePoliciesPage = () => {
   return (
     <>
       <PageOutline>
-        <AddLeaveModal />
+        <AddLeavePolicyModal />
         <Table>
           <thead className="bg-sky-300 rounded-t-lg">
             <tr>

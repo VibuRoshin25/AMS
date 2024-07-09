@@ -1,5 +1,5 @@
 import flipopayLogo from "../../assets/flipopay-logo.png";
-import Button from "../Button.jsx";
+import Button from "../buttons/Button.jsx";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { signInWithEmailAndPassword } from "firebase/auth";
