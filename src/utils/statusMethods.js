@@ -3,7 +3,5 @@ export const calculateStatus = (durationInHours) => {
     return "Full Day";
   } else if (durationInHours >= 4) {
     return "Half Day";
-  } else {
-    return "Absent";
   }
 };

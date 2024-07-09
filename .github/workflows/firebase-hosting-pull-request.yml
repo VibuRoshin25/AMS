@@ -11,9 +11,20 @@ jobs:
   build_and_preview:
     if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
     runs-on: ubuntu-latest
+    environment: production
     steps:
       - uses: actions/checkout@v4
       - run: npm install
+      - name: Set up environment variables
+        run: |
+          echo "VITE_FIREBASE_BROWSER_API=${{ secrets.VITE_FIREBASE_BROWSER_API }}" >> $GITHUB_ENV
+          echo "VITE_FIREBASE_AUTH_DOMAIN=${{ secrets.VITE_FIREBASE_AUTH_DOMAIN }}" >> $GITHUB_ENV
+          echo "VITE_FIREBASE_STORAGE_BUCKET=${{ secrets.VITE_FIREBASE_STORAGE_BUCKET }}" >> $GITHUB_ENV
+          echo "VITE_FIREBASE_SENDER_ID=${{ secrets.VITE_FIREBASE_SENDER_ID }}" >> $GITHUB_ENV
+          echo "VITE_FIREBASE_APP_ID=${{ secrets.VITE_FIREBASE_APP_ID }}" >> $GITHUB_ENV
+          echo "VITE_FIREBASE_MEASUREMENT_ID=${{ secrets.VITE_FIREBASE_MEASUREMENT_ID }}" >> $GITHUB_ENV
+      - name: Verify environment variables
+        run: printenv | grep VITE_
       - run: npm run build
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:

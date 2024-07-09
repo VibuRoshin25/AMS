@@ -1,5 +1,6 @@
 import Header from "./Header";
-import SideNavbar from "./navigation/SideNavbar";
+import Footer from "./Footer";
+import SideNavbar from "./navigationComponents/SideNavbar";
 import classNames from "classnames";
 import { useState, useEffect, useRef } from "react";
 
@@ -32,12 +33,12 @@ const PageOutline = ({ children }) => {
 
   return (
     <>
-      <div className="flex flex-row w-full">
+      <div className="flex flex-row w-full bg-slate-200">
         <SideNavbar isExpanded={isExpanded} toggleNavbar={toggleNavbar} />
         <div
           ref={contentRef}
           className={classNames(
-            "flex flex-col items-center relative grow",
+            "flex flex-col items-center justify-stretch h-full relative grow",
             heightClass
           )}
         >
@@ -46,6 +47,7 @@ const PageOutline = ({ children }) => {
           )}
           <Header />
           {children}
+          <Footer />
         </div>
       </div>
     </>

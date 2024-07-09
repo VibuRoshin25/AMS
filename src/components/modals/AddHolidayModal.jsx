@@ -1,6 +1,6 @@
 import CustomModal from "./Modal";
 import { useState } from "react";
-import Button from "../Button";
+import Button from "../buttons/Button";
 
 const AddHolidayModal = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);

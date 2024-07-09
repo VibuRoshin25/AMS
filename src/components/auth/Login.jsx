@@ -1,10 +1,10 @@
 import flipopayLogo from "../../assets/flipopay-logo.png";
-import Button from "../Button.jsx";
+import Button from "../buttons/Button.jsx";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth, db } from "../firebase/firebase.js";
-import { toast } from "react-toastify";
+import { auth, db } from "../../firebase/firebaseConfig.js";
+import { showSuccessToast, showErrorToast } from "../../utils/toastUtils";
 import { collection, query, where, getDocs } from "firebase/firestore";
 
 const Login = () => {
@@ -22,17 +22,9 @@ const Login = () => {
       );
       const user = userCredential.user;
       console.log(userCredential);
-      toast.success(" Login successfully!", {
-        position: "top-center",
-        autoClose: 1000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "colored",
-      });
+      showSuccessToast("Login successfully!");
       console.log(user);
+
       const q = query(collection(db, "employees"), where("email", "==", email));
       const querySnapshot = await getDocs(q);
       console.log(querySnapshot);
@@ -46,31 +38,13 @@ const Login = () => {
         });
       } else {
         console.error("No such document!");
-        toast.error("User document not found.", {
-          position: "top-center",
-          autoClose: 1000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "colored",
-        });
+        showErrorToast("User document not found.");
       }
     } catch (error) {
       const errorCode = error.code;
       const errorMessage = error.message;
       console.log(errorCode, errorMessage);
-      toast.error("Invalid Credentials.", {
-        position: "top-center",
-        autoClose: 1000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "colored",
-      });
+      showErrorToast("Invalid Credentials.");
     }
   };
 
