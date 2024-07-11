@@ -32,13 +32,12 @@ export default function RecordsTable() {
   const selectedName = useSelector(selectSelectedName);
   const { selectedRole, selectedDepartment, selectedStatus, records, loading } =
     useSelector(selectFilters);
-  const roles = useSelector(selectRoles);
-  const statuses = useSelector(selectStatuses);
-  const departments = useSelector(selectDepartments);
+  const roles = ["All Roles", ...useSelector(selectRoles)];
+  const statuses = ["All Statuses", ...useSelector(selectStatuses)];
+  const departments = ["All Departments", ...useSelector(selectDepartments)];
 
   const [currentPage, setCurrentPage] = useState(1);
 
-  console.log(roles);
   const recordsPerPage = 10;
 
   useEffect(() => {
@@ -48,6 +47,7 @@ export default function RecordsTable() {
     dispatch(fetchDepartments());
   }, [selectedDate, dispatch]);
 
+  console.log(records);
   const filteredRecords = records.filter((record) => {
     return (
       (selectedRole === "All" || record.role === selectedRole) &&

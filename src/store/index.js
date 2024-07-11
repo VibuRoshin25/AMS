@@ -8,6 +8,7 @@ import departmentsReducer from "./departmentsSlice";
 import shiftPoliciesReducer from "./shiftPoliciesSlice";
 import leavePoliciesReducer from "./leavePoliciesSlice";
 import holidaysReducer from "./holidaysSlice";
+import createEmployeeReducer from "./createEmployeeSlice";
 
 const store = configureStore({
   reducer: {
@@ -20,6 +21,7 @@ const store = configureStore({
     shiftPolicies: shiftPoliciesReducer,
     leavePolicies: leavePoliciesReducer,
     holidays: holidaysReducer,
+    createEmployee: createEmployeeReducer,
   },
 });
 

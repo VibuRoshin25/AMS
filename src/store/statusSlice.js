@@ -10,7 +10,7 @@ export const fetchStatuses = createAsyncThunk(
 
     if (statusDocSnap.exists()) {
       const data = statusDocSnap.data();
-      return ["All Statuses", ...data.status];
+      return [...data.status];
     }
     throw new Error("Data not found");
   }

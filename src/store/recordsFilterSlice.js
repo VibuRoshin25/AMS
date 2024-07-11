@@ -12,6 +12,7 @@ export const fetchRecords = createAsyncThunk(
     const attendanceCollection = collection(db, "attendance");
     const selDate = getDate(selectedDate.startDate);
 
+    console.log(selDate);
     const [employeesSnapshot, attendanceSnapshot] = await Promise.all([
       getDocs(employeesCollection),
       getDocs(attendanceCollection),
