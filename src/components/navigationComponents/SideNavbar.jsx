@@ -8,15 +8,15 @@ import {
 } from "react-icons/rx";
 import classNames from "classnames";
 import NavAnchor from "./NavAnchor";
-import logo from "../../assets/flipopay-logo.png";
+import logo from "../../assets/flipopay-logo-bw.png";
 
 const SideNavbar = ({ isExpanded, toggleNavbar }) => {
   return (
     <div className="flex">
       <div
         className={classNames(
-          "bg-sky-200 text-black h-screen transition-all duration-300 fixed z-50",
-          { "w-60": isExpanded, "w-16": !isExpanded }
+          "bg-sky-500 px-4 text-white h-screen transition-all duration-300 fixed z-50",
+          { "w-68": isExpanded, "w-16": !isExpanded }
         )}
       >
         <div
@@ -26,7 +26,7 @@ const SideNavbar = ({ isExpanded, toggleNavbar }) => {
           })}
         >
           <button
-            className="text-black focus:outline-none rounded-full p-2 hover:bg-black hover:bg-opacity-10"
+            className="focus:outline-none rounded-full p-2 hover:bg-black hover:bg-opacity-10"
             onClick={toggleNavbar}
           >
             <HiMenu size={24} />

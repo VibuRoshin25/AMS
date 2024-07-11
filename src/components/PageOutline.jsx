@@ -51,7 +51,7 @@ const PageOutline = ({ children }) => {
           {isExpanded && (
             <div className="absolute inset-0 bg-black/30 z-10"></div>
           )}
-          <div className="w-full flex flex-col items-center">
+          <div className="w-full pt-4 flex flex-col items-center">
             <Header />
             {children}
           </div>

@@ -3,7 +3,7 @@ const FieldSelector = ({ value, children, onChange }) => {
     <select
       value={value}
       onChange={onChange}
-      className="p-1 sm:p-2 pr-0 border-none rounded bg-sky-500 text-white text-center"
+      className="p-1 sm:p-2 pr-0 border-none rounded bg-sky-500 sky-white text-center "
     >
       {children}
     </select>

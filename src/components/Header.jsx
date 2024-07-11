@@ -16,7 +16,7 @@ const Header = () => {
   };
 
   return (
-    <header className="w-full bg-sky-200 flex items-center justify-between h-16 shadow-md px-4 md:px-8 mb-4">
+    <header className="w-[95%] bg-white flex items-center justify-between h-16 rounded-full shadow-md px-4 md:px-8 mb-4">
       <div className="flex items-center">
         <a href="/">
           <img

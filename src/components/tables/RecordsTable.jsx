@@ -80,7 +80,7 @@ export default function RecordsTable() {
   return (
     <>
       <Table>
-        <thead className="bg-sky-300 rounded-t-lg">
+        <thead className="bg-sky-500 rounded-t-lg">
           <tr>
             <StyledTH className="rounded-tl-lg">ID</StyledTH>
             <StyledTH>Employee</StyledTH>
