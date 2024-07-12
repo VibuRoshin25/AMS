@@ -8,7 +8,7 @@ export const fetchRoles = createAsyncThunk("roles/fetchRoles", async () => {
 
   if (rolesDocSnap.exists()) {
     const data = rolesDocSnap.data();
-    return ["All Roles", ...data.role];
+    return [...data.role];
   }
   throw new Error("Data not found");
 });

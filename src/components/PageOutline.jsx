@@ -13,40 +13,48 @@ const PageOutline = ({ children }) => {
     setIsExpanded(!isExpanded);
   };
 
-  useEffect(() => {
-    const updateHeightClass = () => {
-      if (contentRef.current) {
-        const contentHeight = contentRef.current.scrollHeight;
-        const screenHeight = window.innerHeight;
-        if (contentHeight > screenHeight) {
-          setHeightClass("h-full");
-        } else {
-          setHeightClass("h-screen");
-        }
+  const updateHeightClass = () => {
+    if (contentRef.current) {
+      const contentHeight = contentRef.current.scrollHeight;
+      const screenHeight = window.innerHeight;
+      if (contentHeight > screenHeight) {
+        setHeightClass("h-full");
+      } else {
+        setHeightClass("h-screen");
       }
-    };
+    }
+  };
 
+  useEffect(() => {
     updateHeightClass();
     window.addEventListener("resize", updateHeightClass);
-    return () => window.removeEventListener("resize", updateHeightClass);
+    return () => {
+      window.removeEventListener("resize", updateHeightClass);
+    };
   }, []);
+
+  useEffect(() => {
+    updateHeightClass();
+  }, [children]);
 
   return (
     <>
-      <div className="flex flex-row w-full bg-slate-200">
+      <div className="flex flex-row w-full h-full bg-slate-200">
         <SideNavbar isExpanded={isExpanded} toggleNavbar={toggleNavbar} />
         <div
           ref={contentRef}
           className={classNames(
-            "flex flex-col items-center justify-stretch h-full relative grow",
+            "flex flex-col items-center justify-between relative grow",
             heightClass
           )}
         >
           {isExpanded && (
             <div className="absolute inset-0 bg-black/30 z-10"></div>
           )}
-          <Header />
-          {children}
+          <div className="w-full pt-4 flex flex-col items-center">
+            <Header />
+            {children}
+          </div>
           <Footer />
         </div>
       </div>

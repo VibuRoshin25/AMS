@@ -33,7 +33,7 @@ const LabeledInput = ({
       return (
         <input
           type={type}
-          value={value}
+          checked={value}
           onChange={handleChange}
           placeholder={placeholder}
           className="form-input self-start w-4 h-4 text-sky-600 bg-gray-100 border-gray-300 rounded "

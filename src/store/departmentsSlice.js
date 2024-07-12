@@ -10,7 +10,7 @@ export const fetchDepartments = createAsyncThunk(
 
     if (departmentsDocSnap.exists()) {
       const data = departmentsDocSnap.data();
-      return ["All Departments", ...data.department];
+      return [...data.department];
     }
     throw new Error("Data not found");
   }
