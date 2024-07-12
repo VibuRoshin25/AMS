@@ -2,20 +2,9 @@ import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Button from "../buttons/Button";
 import CustomModal from "./Modal";
+import { signUp } from "../../services/authService";
 import LabeledInput from "../LabeledInput";
-import { createUserWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../../firebase/firebaseConfig.js";
-import {
-  createEmployee,
-  setName,
-  setId,
-  setDept,
-  setRole,
-  setEmail,
-  setIsAdmin,
-  setPassword,
-  employeeData,
-} from "../../store/createEmployeeSlice";
+import { createEmployee, employeeData } from "../../store/createEmployeeSlice";
 import { selectRoles } from "../../store/rolesSlice";
 import { selectDepartments } from "../../store/departmentsSlice";
 import { validateEmail, validatePassword } from "../../utils/validationMethods";
@@ -23,8 +12,16 @@ import { showSuccessToast, showErrorToast } from "../../utils/toastUtils";
 
 const CreateEmployeeModal = () => {
   const dispatch = useDispatch();
-  const { employee, loading, error } = useSelector(employeeData);
+  const { loading, error } = useSelector(employeeData);
 
+  const [name, setName] = useState("");
+  const [id, setId] = useState("");
+  const [dept, setDept] = useState("");
+  const [role, setRole] = useState("");
+  const [email, setEmail] = useState("");
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [password, setPassword] = useState("");
+  const [availableLeaves, setAvailableLeaves] = useState(0);
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -34,33 +31,42 @@ const CreateEmployeeModal = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!validateEmail(employee.email)) {
+    if (!validateEmail(email)) {
       showErrorToast("Invalid email format");
       return;
     }
 
-    if (!validatePassword(employee.password)) {
+    if (!validatePassword(password)) {
       showErrorToast(
         "Password must be 6-12 characters long, include uppercase and lowercase letters, and a number"
       );
       return;
     }
 
-    if (employee.password !== confirmPassword) {
+    if (password !== confirmPassword) {
       showErrorToast("Passwords do not match");
       return;
     }
 
     try {
-      await dispatch(createEmployee(employee)).unwrap();
-      await createUserWithEmailAndPassword(
-        auth,
-        employee.email,
-        employee.password
-      );
+      const abcd = await dispatch(
+        createEmployee({
+          name,
+          id,
+          dept,
+          role,
+          email,
+          isAdmin,
+          password,
+          availableLeaves,
+        })
+      ).unwrap();
+      console.log(abcd);
+      await signUp(email, password);
 
       showSuccessToast("Employee added successfully!");
       setIsModalOpen(false);
+      window.location.reload();
     } catch (error) {
       console.log(error);
       showErrorToast("Failed to add employee.");
@@ -82,56 +88,63 @@ const CreateEmployeeModal = () => {
         <form onSubmit={handleSubmit} className="space-y-4" autoComplete="off">
           <LabeledInput
             label="Name"
-            value={employee.name}
-            onChange={(e) => dispatch(setName(e.target.value))}
+            value={name}
+            onChange={setName}
             type="text"
             placeholder="Enter name"
           />
           <LabeledInput
             label="Employee ID"
-            value={employee.id}
-            onChange={(e) => dispatch(setId(e.target.value))}
+            value={id}
+            onChange={setId}
             placeholder="Enter Employee ID"
             type="text"
           />
           <LabeledInput
             label="Department"
-            value={employee.dept}
-            onChange={(e) => dispatch(setDept(e.target.value))}
+            value={dept}
+            onChange={setDept}
             options={departments}
             type="select"
           />
           <LabeledInput
             label="Role"
-            value={employee.role}
-            onChange={(e) => dispatch(setRole(e.target.value))}
+            value={role}
+            onChange={setRole}
             options={roles}
             type="select"
           />
           <LabeledInput
             label="Admin"
-            checked={employee.isAdmin}
-            onChange={(e) => dispatch(setIsAdmin(e.target.checked))}
+            value={isAdmin}
+            onChange={setIsAdmin}
             type="checkbox"
           />
           <LabeledInput
+            label="Available Leaves"
+            value={availableLeaves}
+            onChange={setAvailableLeaves}
+            placeholder={20}
+            type="number"
+          />
+          <LabeledInput
             label="Email"
-            value={employee.email}
-            onChange={(e) => dispatch(setEmail(e.target.value))}
+            value={email}
+            onChange={setEmail}
             placeholder="Enter email"
             type="email"
           />
           <LabeledInput
             label="Password"
-            value={employee.password}
-            onChange={(e) => dispatch(setPassword(e.target.value))}
+            value={password}
+            onChange={setPassword}
             placeholder="Enter password"
             type="password"
           />
           <LabeledInput
             label="Confirm Password"
             value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
+            onChange={setConfirmPassword}
             placeholder="Confirm password"
             type="password"
           />

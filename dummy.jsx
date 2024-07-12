@@ -1,143 +1,90 @@
-import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { signUp } from "../../services/authService";
-import Button from "../buttons/Button";
-import CustomModal from "./Modal";
-import LabeledInput from "../LabeledInput";
-import {
-  createEmployee,
-  setName,
-  setId,
-  setDept,
-  setRole,
-  setEmail,
-  setIsAdmin,
-  setPassword,
-  employeeData,
-} from "../../store/createEmployeeSlice";
-import { selectRoles } from "../../store/rolesSlice";
-import { selectDepartments } from "../../store/departmentsSlice";
-import { validateEmail, validatePassword } from "../../utils/validationMethods";
-import { showSuccessToast, showErrorToast } from "../../utils/toastUtils";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { db } from "../firebase/firebaseConfig";
+import { doc, updateDoc } from "firebase/firestore";
 
-const CreateEmployeeModal = () => {
-  const dispatch = useDispatch();
-  const { employee, loading, error } = useSelector(employeeData);
-
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const roles = useSelector(selectRoles);
-  const departments = useSelector(selectDepartments);
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    if (!validateEmail(employee.email)) {
-      showErrorToast("Invalid email format");
-      return;
-    }
-
-    if (!validatePassword(employee.password)) {
-      showErrorToast(
-        "Password must be 6-12 characters long, include uppercase and lowercase letters, and a number"
-      );
-      return;
-    }
-
-    if (employee.password !== confirmPassword) {
-      showErrorToast("Passwords do not match");
-      return;
-    }
-
+export const createEmployee = createAsyncThunk(
+  "createEmployee/createEmployee",
+  async (data, { rejectWithValue }) => {
     try {
-      await dispatch(createEmployee(employee)).unwrap();
-      await signUp(employee.email, employee.password);
-
-      showSuccessToast("Employee added successfully!");
-      setIsModalOpen(false);
+      const recordDoc = doc(db, "employees", data.id);
+      await updateDoc(recordDoc, data);
+      return data;
     } catch (error) {
-      console.log(error);
-      showErrorToast("Failed to add employee.");
+      return rejectWithValue(error.message);
     }
-  };
+  }
+);
 
-  const openModal = () => {
-    setIsModalOpen(true);
-  };
+const createEmployeeSlice = createSlice({
+  name: "createEmployee",
+  initialState: {
+    employee: {
+      name: "",
+      id: "",
+      dept: "",
+      role: "",
+      email: "",
+      isAdmin: false,
+      availableLeaves: 0,
+      password: "",
+    },
+    loading: false,
+    error: null,
+  },
+  reducers: {
+    setSelectedName: (state, action) => {
+      state.employee.name = action.payload;
+    },
+    setSelectedId: (state, action) => {
+      state.employee.id = action.payload;
+    },
+    setSelectedDept: (state, action) => {
+      state.employee.dept = action.payload;
+    },
+    setSelectedRole: (state, action) => {
+      state.employee.role = action.payload;
+    },
+    setSelectedEmail: (state, action) => {
+      state.employee.email = action.payload;
+    },
+    setSelectedIsAdmin: (state, action) => {
+      state.employee.isAdmin = action.payload;
+    },
+    setSelectedPassword: (state, action) => {
+      state.employee.password = action.payload;
+    },
+    setSelectedAvailableLeaves: (state, action) => {
+      state.employee.availableLeaves = action.payload;
+    },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(createEmployee.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(createEmployee.fulfilled, (state, action) => {
+        state.employee = action.payload;
+        state.loading = false;
+      })
+      .addCase(createEmployee.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      });
+  },
+});
 
-  const closeModal = () => {
-    setIsModalOpen(false);
-  };
+export const {
+  setSelectedName,
+  setSelectedId,
+  setSelectedDept,
+  setSelectedRole,
+  setSelectedEmail,
+  setSelectedIsAdmin,
+  setSelectedPassword,
+  setSelectedAvailableLeaves,
+} = createEmployeeSlice.actions;
 
-  return (
-    <div>
-      <Button onClick={openModal}>Create Employee</Button>
-      <CustomModal isOpen={isModalOpen} onClose={closeModal}>
-        <form onSubmit={handleSubmit} className="space-y-4" autoComplete="off">
-          <LabeledInput
-            label="Name"
-            value={employee.name}
-            onChange={(e) => dispatch(setName(e.target.value))}
-            type="text"
-            placeholder="Enter name"
-          />
-          <LabeledInput
-            label="Employee ID"
-            value={employee.id}
-            onChange={(e) => dispatch(setId(e.target.value))}
-            placeholder="Enter Employee ID"
-            type="text"
-          />
-          <LabeledInput
-            label="Department"
-            value={employee.dept}
-            onChange={(e) => dispatch(setDept(e.target.value))}
-            options={departments}
-            type="select"
-          />
-          <LabeledInput
-            label="Role"
-            value={employee.role}
-            onChange={(e) => dispatch(setRole(e.target.value))}
-            options={roles}
-            type="select"
-          />
-          <LabeledInput
-            label="Admin"
-            checked={employee.isAdmin}
-            onChange={(e) => dispatch(setIsAdmin(e.target.checked))}
-            type="checkbox"
-          />
-          <LabeledInput
-            label="Email"
-            value={employee.email}
-            onChange={(e) => dispatch(setEmail(e.target.value))}
-            placeholder="Enter email"
-            type="email"
-          />
-          <LabeledInput
-            label="Password"
-            value={employee.password}
-            onChange={(e) => dispatch(setPassword(e.target.value))}
-            placeholder="Enter password"
-            type="password"
-          />
-          <LabeledInput
-            label="Confirm Password"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            placeholder="Confirm password"
-            type="password"
-          />
-          <Button type="submit" disabled={loading}>
-            {loading ? "Creating..." : "Create Employee"}
-          </Button>
-          {error && <p className="text-red-500">{error}</p>}
-        </form>
-      </CustomModal>
-    </div>
-  );
-};
+export const employeeData = (state) => state.createEmployee;
 
-export default CreateEmployeeModal;
+export default createEmployeeSlice.reducer;

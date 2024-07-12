@@ -1,14 +1,13 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { db } from "../firebase/firebaseConfig";
-import { doc, updateDoc } from "firebase/firestore";
+import { doc, setDoc } from "firebase/firestore";
 
 export const createEmployee = createAsyncThunk(
   "createEmployee/createEmployee",
   async (data, { rejectWithValue }) => {
     try {
-      const recordDoc = doc(db, "attendance", data.id);
-      await updateDoc(recordDoc, data);
-      return data;
+      const recordDoc = doc(db, "employees", data.id);
+      await setDoc(recordDoc, data);
     } catch (error) {
       return rejectWithValue(error.message);
     }
@@ -25,33 +24,11 @@ const createEmployeeSlice = createSlice({
       role: "",
       email: "",
       isAdmin: false,
+      availableLeaves: 0,
       password: "",
     },
     loading: false,
     error: null,
-  },
-  reducers: {
-    setName: (state, action) => {
-      state.employee.name = action.payload;
-    },
-    setId: (state, action) => {
-      state.employee.id = action.payload;
-    },
-    setDept: (state, action) => {
-      state.employee.dept = action.payload;
-    },
-    setRole: (state, action) => {
-      state.employee.role = action.payload;
-    },
-    setEmail: (state, action) => {
-      state.employee.email = action.payload;
-    },
-    setIsAdmin: (state, action) => {
-      state.employee.isAdmin = action.payload;
-    },
-    setPassword: (state, action) => {
-      state.employee.password = action.payload;
-    },
   },
   extraReducers: (builder) => {
     builder
@@ -60,7 +37,7 @@ const createEmployeeSlice = createSlice({
         state.error = null;
       })
       .addCase(createEmployee.fulfilled, (state, action) => {
-        state.records = action.payload;
+        state.employee = action.payload;
         state.loading = false;
       })
       .addCase(createEmployee.rejected, (state, action) => {
@@ -69,16 +46,6 @@ const createEmployeeSlice = createSlice({
       });
   },
 });
-
-export const {
-  setName,
-  setId,
-  setDept,
-  setRole,
-  setEmail,
-  setIsAdmin,
-  setPassword,
-} = createEmployeeSlice.actions;
 
 export const employeeData = (state) => state.createEmployee;
 
